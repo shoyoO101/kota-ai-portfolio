@@ -10,7 +10,6 @@ import {
   Zap,
   GitBranch,
   Cpu,
-  Code2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({

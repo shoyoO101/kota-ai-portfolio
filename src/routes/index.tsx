@@ -10,13 +10,33 @@ import {
   Zap,
   GitBranch,
   Cpu,
+  Code2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Kota AI — Autonomous AI Systems & Workflow Automation",
+        title: "Kareem | AI Automation Engineer — Kota AI",
+      },
+      {
+        name: "description",
+        content:
+          "Kareem builds autonomous workflows and custom AI infrastructure — vector-grounded RAG chatbots, n8n backend pipelines, and API integrations that eliminate manual work.",
+      },
+      { property: "og:title", content: "Kareem | AI Automation Engineer — Kota AI" },
+      {
+        property: "og:description",
+        content:
+          "Vector-grounded RAG chatbots, n8n backend pipelines, and API integrations that eliminate manual work.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Kareem | AI Automation Engineer — Kota AI" },
+      {
+        name: "twitter:description",
+        content:
+          "Vector-grounded RAG chatbots, n8n backend pipelines, and API integrations that eliminate manual work.",
       },
     ],
   }),
@@ -25,55 +45,46 @@ export const Route = createFileRoute("/")({
 
 const PROJECTS = [
   {
-    tag: "Support Automation",
-    title: "Multi-Platform Customer Support Agent",
+    title: "Enterprise RAG Chatbot Widget",
+    subtitle: "Customer Support & Knowledge Retrieval",
     description:
-      "Autonomous web chat & messaging automation connected to internal knowledge bases. Resolves tier-1 tickets end-to-end and escalates the rest with full context.",
-    bullets: ["Web + WhatsApp chat", "Knowledge-base grounded", "Human handoff ready"],
-    accent: "from-indigo-soft/20",
+      "Context-aware, zero-hallucination web widget trained directly on custom business knowledge bases using Qdrant vector search and n8n orchestration.",
+    badges: ["Qdrant", "n8n", "OpenAI", "REST APIs"],
   },
   {
-    tag: "Revenue Pipeline",
     title: "Lead Intake & CRM Pipeline",
+    subtitle: "Revenue Operations & Webhooks",
     description:
-      "Automated lead qualification, instant scoring, and routing via custom webhooks. Every inbound lead enriched, ranked, and dropped into the right pipeline in seconds.",
-    bullets: ["Instant scoring", "Webhook routing", "CRM sync"],
-    accent: "from-indigo-soft/20",
+      "Automated lead qualification, instant intent scoring, and routing pipeline connecting inbound webhooks to CRM systems.",
+    badges: ["Webhooks", "n8n", "Python", "CRM Integrations"],
   },
   {
-    tag: "Knowledge Retrieval",
-    title: "RAG & Vector Knowledge Systems",
+    title: "Multi-Platform Messaging Assistant",
+    subtitle: "API Integration & Workflows",
     description:
-      "Context-aware search tools built for instant data retrieval across documents. Custom chunking and retrieval over Qdrant for answers grounded in your own corpus.",
-    bullets: ["Qdrant vector store", "Doc-grounded answers", "Sub-second search"],
-    accent: "from-indigo-soft/20",
+      "Custom AI assistant integrated across WhatsApp Business API, Telegram, and internal email triggers for automated query resolution.",
+    badges: ["WhatsApp Business API", "Telegram API", "Postman"],
   },
 ] as const;
 
 const CAPABILITIES = [
   {
-    icon: Bot,
-    title: "Custom AI Agents",
-    description:
-      "Autonomous decision-making and API execution. Agents that plan, call tools, and act — not just chat.",
-  },
-  {
     icon: Workflow,
     title: "Workflow Engineering",
     description:
-      "n8n, webhooks, and complex backend pipelines wired together into reliable, observable automation.",
+      "Complex backend pipelines connecting n8n, webhooks, and REST APIs into reliable, observable automation.",
+  },
+  {
+    icon: Bot,
+    title: "AI Agent Architecture",
+    description:
+      "Autonomous decision-making tools with tool-calling capabilities — agents that plan, call APIs, and act.",
   },
   {
     icon: MessageSquare,
-    title: "Embedded Chat Widgets",
+    title: "Custom Web Widgets",
     description:
-      "Lightweight, zero-lag UI widgets dropped into your product so users talk to your system in place.",
-  },
-  {
-    icon: Database,
-    title: "Database & Vector Integrations",
-    description:
-      "Qdrant and custom knowledge bases wired for instant retrieval and grounded, accurate responses.",
+      "Embedded, lightweight chat interfaces customized for web and mobile so users talk to your system in place.",
   },
 ] as const;
 
@@ -105,7 +116,7 @@ function Index() {
         <Projects />
         <Capabilities />
         <TechStack />
-        <AuditSection />
+        <Contact />
       </main>
       <Footer />
     </div>
@@ -133,7 +144,7 @@ function Header() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
-              Open for Async Projects
+              Open for Projects
             </span>
           </div>
 
@@ -158,10 +169,10 @@ function Header() {
               Tech Stack
             </a>
             <a
-              href="#audit"
+              href="#contact"
               className="inline-flex items-center rounded-md border border-hairline px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-indigo-accent/60 hover:bg-indigo-soft/10"
             >
-              Request Audit
+              Get in Touch
             </a>
           </nav>
         </div>
@@ -178,33 +189,34 @@ function Hero() {
           {/* Eyebrow pill */}
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-accent" />
-            AI Systems Architect & Automation Specialist
+            AI Systems Architect & Automation Engineer
           </div>
 
           {/* Headline */}
           <h1 className="mt-7 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            I build autonomous workflows and custom AI systems that run quietly in the background.
+            Hi, I'm Kareem. I build autonomous workflows and custom AI infrastructure.
           </h1>
 
           {/* Subheadline */}
           <p className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Send me your manual bottleneck, and I'll send back a custom video breakdown showing how to automate it.
+            Specializing in vector-grounded RAG chatbots, n8n backend pipelines,
+            and API integrations that eliminate manual work.
           </p>
 
           {/* Actions */}
           <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row">
             <a
-              href="#audit"
+              href="#contact"
               className="group inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)]"
             >
-              Request a Free Video Audit
+              Get in Touch
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
               href="#work"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
-              See Sample Workflows
+              View Architecture
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -308,7 +320,7 @@ function Projects() {
         <SectionHeader
           id="work"
           eyebrow="Featured Work"
-          title="Automation that ships and stays running"
+          title="Featured Systems & Architecture"
         />
         <div className="grid gap-4 md:grid-cols-3">
           {PROJECTS.map((p) => (
@@ -316,26 +328,25 @@ function Projects() {
               key={p.title}
               className="group glass-card flex flex-col rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-indigo-accent/40"
             >
-              <span className="font-mono text-[11px] uppercase tracking-wider text-indigo-accent/80">
-                {p.tag}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold leading-snug tracking-tight text-foreground">
+              <h3 className="text-lg font-semibold leading-snug tracking-tight text-foreground">
                 {p.title}
               </h3>
-              <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-indigo-accent/80">
+                {p.subtitle}
+              </p>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                 {p.description}
               </p>
-              <ul className="mt-4 space-y-1.5 border-t border-hairline pt-4">
-                {p.bullets.map((b) => (
-                  <li
+              <div className="mt-4 flex flex-wrap gap-1.5 border-t border-hairline pt-4">
+                {p.badges.map((b) => (
+                  <span
                     key={b}
-                    className="flex items-center gap-2 text-xs text-muted-foreground"
+                    className="inline-flex items-center rounded-md border border-hairline bg-surface px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
                   >
-                    <Check className="h-3.5 w-3.5 text-indigo-accent/80" />
                     {b}
-                  </li>
+                  </span>
                 ))}
-              </ul>
+              </div>
             </article>
           ))}
         </div>
@@ -353,7 +364,7 @@ function Capabilities() {
           eyebrow="Core Capabilities"
           title="What I build, end to end"
         />
-        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2">
+        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
           {CAPABILITIES.map((c) => {
             const Icon = c.icon;
             return (
@@ -405,46 +416,42 @@ function TechStack() {
   );
 }
 
-function AuditSection() {
+function Contact() {
   return (
-    <section className="py-20 sm:py-24">
+    <section id="contact" className="py-20 sm:py-24">
       <Container>
         <div className="glass-card grid gap-8 overflow-hidden rounded-xl p-8 md:grid-cols-2 md:p-10">
           {/* Left: copy */}
           <div className="flex flex-col justify-center">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-indigo-accent">
-              Async Request
+              Contact
             </p>
             <h2 className="mt-3 text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl">
-              Get a free 5-minute Loom audit of your process.
+              Let's build something.
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Describe the repetitive work holding your business back. I'll
-              record a personalized video walking through the exact automation
-              architecture to fix it.
+              Have a process you want to automate or need a custom AI system?
+              Reach out directly or leave a message below.
             </p>
-            <ul className="mt-6 space-y-2">
-              {["No sales call", "Reply within 48h", "Yours to keep"].map((b) => (
-                <li
-                  key={b}
-                  className="flex items-center gap-2 text-sm text-muted-foreground"
-                >
-                  <Check className="h-4 w-4 text-indigo-accent" />
-                  {b}
-                </li>
-              ))}
-            </ul>
+            <a
+              href="mailto:kareem@trykotaai.com"
+              className="group mt-6 inline-flex items-center gap-2 self-start rounded-md border border-hairline bg-surface px-3.5 py-2 font-mono text-sm text-foreground transition-colors hover:border-indigo-accent/60 hover:bg-indigo-soft/10"
+            >
+              <span className="text-indigo-accent">@</span>
+              kareem@trykotaai.com
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </a>
           </div>
 
           {/* Right: form */}
-          <AuditForm />
+          <ContactForm />
         </div>
       </Container>
     </section>
   );
 }
 
-function AuditForm() {
+function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
@@ -454,10 +461,10 @@ function AuditForm() {
           <Check className="h-6 w-6" />
         </span>
         <h3 className="mt-4 text-lg font-semibold text-foreground">
-          Request received
+          Message sent
         </h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          Thanks — I'll record your audit and send the link to your inbox
+          Thanks — I'll get back to you at the email you provided, usually
           within 48 hours.
         </p>
       </div>
@@ -495,13 +502,13 @@ function AuditForm() {
           />
         </Field>
       </div>
-      <Field label="What manual task do you want to eliminate?" htmlFor="task">
+      <Field label="Message / Website URL" htmlFor="message">
         <textarea
-          id="task"
-          name="task"
+          id="message"
+          name="message"
           required
           rows={4}
-          placeholder="e.g. We copy lead details from email into our CRM and tag them manually, ~40 times a day..."
+          placeholder="Tell me about the process you want to automate, or drop a link to your product / docs..."
           className="w-full resize-none rounded-md border border-hairline bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-indigo-accent/60 focus:ring-2 focus:ring-ring"
         />
       </Field>
@@ -509,7 +516,7 @@ function AuditForm() {
         type="submit"
         className="group inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)]"
       >
-        Get My Video Audit
+        Send Message
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </button>
     </form>
@@ -542,7 +549,7 @@ function Footer() {
             Kota<span className="text-indigo-accent"> AI</span>
           </span>
           <p className="text-xs text-muted-foreground">
-            Designed by Kota AI © 2026. Built for precision.
+            Designed by Kareem © 2026. Built for precision.
           </p>
         </div>
       </Container>

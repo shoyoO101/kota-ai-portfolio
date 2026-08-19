@@ -269,7 +269,7 @@ function Hero() {
           {/* Eyebrow pill */}
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-accent" />
-            AI Systems Architect & Automation Engineer
+            AI Automation & Systems Engineer
           </div>
 
           {/* Headline */}
@@ -279,9 +279,19 @@ function Hero() {
 
           {/* Subheadline */}
           <p className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Specializing in vector-grounded RAG chatbots, n8n backend pipelines,
-            and API integrations that eliminate manual work.
+            Specializing in RAG chatbots, n8n backend pipelines, and API
+            integrations that eliminate manual work.
           </p>
+
+          {/* Inline CTA */}
+          <p className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-foreground/90 sm:text-lg">
+            <span className="mr-1">👉</span>
+            <span className="text-indigo-accent">Try my live RAG demo:</span>{" "}
+            I've trained a chatbot on an e-commerce site's data to show you
+            exactly how it works—just click the floating chat bubble in the
+            corner of this screen.
+          </p>
+
 
           {/* Actions */}
           <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row">

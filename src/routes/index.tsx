@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+import {
   ArrowRight,
   Bot,
   Workflow,
@@ -44,27 +51,108 @@ export const Route = createFileRoute("/")({
 
 const PROJECTS = [
   {
-    title: "Enterprise RAG Chatbot Widget",
+    title: "AI Chat Widget for E-Commerce & Support",
     subtitle: "Customer Support & Knowledge Retrieval",
     description:
-      "Context-aware, zero-hallucination web widget trained directly on custom business knowledge bases using Qdrant vector search and n8n orchestration.",
+      "Businesses receive repetitive customer questions that are already answered in their documentation and policies.",
     badges: ["Qdrant", "n8n", "OpenAI", "REST APIs"],
+    details: [
+      {
+        label: "Problem",
+        body: "Businesses receive repetitive customer questions that are already answered in their documentation, policies, and product information.",
+      },
+      {
+        label: "Solution",
+        body: "I built a website-embedded AI chatbot using a retrieval-augmented generation (RAG) architecture. The system retrieves relevant information from a structured knowledge base before generating an answer, allowing the assistant to respond using business-specific information instead of relying only on the model's general knowledge.",
+      },
+      {
+        label: "Architecture",
+        body: "Qdrant for vector search, OpenAI for LLM generation, n8n for orchestration, and REST APIs to manage the data flow.",
+      },
+      {
+        label: "Outcome",
+        body: "Provides customers with instant, accurate answers based on the company's own knowledge base while significantly reducing the need for repetitive manual support.",
+      },
+    ],
+    note: "💡 Live Demo: You are looking at it! The chat bubble in the bottom right of this website is a live instance of this system, trained on the Sewell.com e-commerce catalog and policies. Give it a try.",
   },
   {
     title: "Lead Intake & CRM Pipeline",
     subtitle: "Revenue Operations & Webhooks",
     description:
-      "Automated lead qualification, instant intent scoring, and routing pipeline connecting inbound webhooks to CRM systems.",
-    badges: ["Webhooks", "n8n", "Python", "CRM Integrations"],
+      "Inbound leads often require manual qualification and routing before a sales team can act.",
+    badges: ["n8n", "Webhooks", "Python", "CRM Integrations"],
+    details: [
+      {
+        label: "Problem",
+        body: "Inbound leads often require manual qualification, categorization, and routing before a sales team can act on them.",
+      },
+      {
+        label: "Solution",
+        body: "I built an automated lead intake pipeline that receives inbound data through webhooks, analyzes lead intent and information, qualifies the lead, and routes the result into the appropriate CRM or workflow.",
+      },
+      {
+        label: "Architecture",
+        body: "Built with n8n for workflow management, Python for custom logic and scoring, and webhooks for real-time data ingestion.",
+      },
+      {
+        label: "Outcome",
+        body: "Turns incoming lead data into structured, actionable information automatically and removes repetitive manual processing from the sales team's plate.",
+      },
+    ],
+    note: null,
   },
   {
     title: "Multi-Platform Messaging Assistant",
     subtitle: "API Integration & Workflows",
     description:
-      "Custom AI assistant integrated across WhatsApp Business API, Telegram, and internal email triggers for automated query resolution.",
-    badges: ["WhatsApp Business API", "Telegram API", "Postman"],
+      "Businesses across multiple messaging channels face fragmented workflows and repetitive questions.",
+    badges: ["WhatsApp API", "Telegram API", "n8n", "Postman"],
+    details: [
+      {
+        label: "Problem",
+        body: "Businesses communicating with customers across multiple messaging channels often have repetitive questions and fragmented workflows.",
+      },
+      {
+        label: "Solution",
+        body: "I built an AI-powered messaging assistant that connects business messaging channels to an AI system and automated backend workflows, allowing incoming questions to be processed and routed automatically based on intent.",
+      },
+      {
+        label: "Architecture",
+        body: "Using the WhatsApp Business API and Telegram API for channel connectivity, and n8n to orchestrate the automated reply and routing logic.",
+      },
+      {
+        label: "Outcome",
+        body: "Creates a more centralized, automated customer communication workflow that ensures no inquiry falls through the cracks across different platforms.",
+      },
+    ],
+    note: null,
   },
 ] as const;
+
+const PROCESS_STEPS = [
+  {
+    step: "01",
+    title: "Understand",
+    body: "I map the existing workflow, identify the bottlenecks, and define what should be automated.",
+  },
+  {
+    step: "02",
+    title: "Design",
+    body: "I design the system architecture around the business process, not around a specific tool.",
+  },
+  {
+    step: "03",
+    title: "Build",
+    body: "I connect the models, APIs, databases, webhooks, and automation logic into a working system.",
+  },
+  {
+    step: "04",
+    title: "Deploy",
+    body: "I test the system, refine the workflow, and make sure everything is ready for real-world deployment.",
+  },
+] as const;
+
 
 const CAPABILITIES = [
   {
@@ -115,7 +203,9 @@ function Index() {
         <Projects />
         <Capabilities />
         <TechStack />
+        <Process />
         <Contact />
+
       </main>
       <Footer />
     </div>
@@ -168,6 +258,13 @@ function Header() {
               Tech Stack
             </a>
             <a
+              href="#process"
+              className="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-block"
+            >
+              How I Build
+            </a>
+
+            <a
               href="#contact"
               className="inline-flex items-center rounded-md border border-hairline px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-indigo-accent/60 hover:bg-indigo-soft/10"
             >
@@ -188,7 +285,7 @@ function Hero() {
           {/* Eyebrow pill */}
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-accent" />
-            AI Systems Architect & Automation Engineer
+            AI Automation & Systems Engineer
           </div>
 
           {/* Headline */}
@@ -198,9 +295,19 @@ function Hero() {
 
           {/* Subheadline */}
           <p className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Specializing in vector-grounded RAG chatbots, n8n backend pipelines,
-            and API integrations that eliminate manual work.
+            Specializing in RAG chatbots, n8n backend pipelines, and API
+            integrations that eliminate manual work.
           </p>
+
+          {/* Inline CTA */}
+          <p className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-foreground/90 sm:text-lg">
+            <span className="mr-1">👉</span>
+            <span className="text-indigo-accent">Try my live RAG demo:</span>{" "}
+            I've trained a chatbot on an e-commerce site's data to show you
+            exactly how it works—just click the floating chat bubble in the
+            corner of this screen.
+          </p>
+
 
           {/* Actions */}
           <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row">
@@ -313,6 +420,9 @@ function SectionHeader({
 }
 
 function Projects() {
+  const [active, setActive] = useState<number | null>(null);
+  const project = active === null ? null : PROJECTS[active];
+
   return (
     <section className="border-b border-hairline py-20 sm:py-24">
       <Container>
@@ -322,10 +432,11 @@ function Projects() {
           title="Featured Systems & Architecture"
         />
         <div className="grid gap-4 md:grid-cols-3">
-          {PROJECTS.map((p) => (
+          {PROJECTS.map((p, i) => (
             <article
               key={p.title}
-              className="group glass-card flex flex-col rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-indigo-accent/40"
+              onClick={() => setActive(i)}
+              className="group glass-card flex cursor-pointer flex-col rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-indigo-accent/40"
             >
               <h3 className="text-lg font-semibold leading-snug tracking-tight text-foreground">
                 {p.title}
@@ -346,13 +457,92 @@ function Projects() {
                   </span>
                 ))}
               </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActive(i);
+                }}
+                className="mt-4 inline-flex items-center gap-1.5 self-start text-sm font-medium text-indigo-accent transition-colors hover:text-foreground"
+              >
+                View Case Study
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
             </article>
+          ))}
+        </div>
+      </Container>
+
+      <Dialog open={active !== null} onOpenChange={(o) => !o && setActive(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-hairline bg-card sm:max-w-2xl">
+          {project && (
+            <>
+              <DialogHeader>
+                <p className="font-mono text-[11px] uppercase tracking-wider text-indigo-accent/80">
+                  {project.subtitle}
+                </p>
+                <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
+                  {project.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-wrap gap-1.5">
+                {project.badges.map((b) => (
+                  <span
+                    key={b}
+                    className="inline-flex items-center rounded-md border border-hairline bg-surface px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-2 flex flex-col gap-5">
+                {project.details.map((d) => (
+                  <div key={d.label}>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-indigo-accent">
+                      {d.label}
+                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {d.body}
+                    </p>
+                  </div>
+                ))}
+                {project.note && (
+                  <p className="rounded-lg border border-indigo-accent/30 bg-indigo-soft/10 p-4 text-sm leading-relaxed text-muted-foreground">
+                    {project.note}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
+function Process() {
+  return (
+    <section className="border-b border-hairline py-20 sm:py-24">
+      <Container>
+        <SectionHeader id="process" eyebrow="Process" title="How I build" />
+        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
+          {PROCESS_STEPS.map((s) => (
+            <div key={s.step} className="bg-card p-6 transition-colors hover:bg-surface-elevated">
+              <p className="font-mono text-xs text-indigo-accent">Step {s.step}</p>
+              <h3 className="mt-3 text-base font-semibold tracking-tight text-foreground">
+                {s.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {s.body}
+              </p>
+            </div>
           ))}
         </div>
       </Container>
     </section>
   );
 }
+
 
 function Capabilities() {
   return (

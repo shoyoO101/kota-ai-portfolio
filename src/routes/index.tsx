@@ -394,6 +394,9 @@ function SectionHeader({
 }
 
 function Projects() {
+  const [active, setActive] = useState<number | null>(null);
+  const project = active === null ? null : PROJECTS[active];
+
   return (
     <section className="border-b border-hairline py-20 sm:py-24">
       <Container>
@@ -403,10 +406,11 @@ function Projects() {
           title="Featured Systems & Architecture"
         />
         <div className="grid gap-4 md:grid-cols-3">
-          {PROJECTS.map((p) => (
+          {PROJECTS.map((p, i) => (
             <article
               key={p.title}
-              className="group glass-card flex flex-col rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-indigo-accent/40"
+              onClick={() => setActive(i)}
+              className="group glass-card flex cursor-pointer flex-col rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-indigo-accent/40"
             >
               <h3 className="text-lg font-semibold leading-snug tracking-tight text-foreground">
                 {p.title}
@@ -427,13 +431,92 @@ function Projects() {
                   </span>
                 ))}
               </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActive(i);
+                }}
+                className="mt-4 inline-flex items-center gap-1.5 self-start text-sm font-medium text-indigo-accent transition-colors hover:text-foreground"
+              >
+                View Case Study
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
             </article>
+          ))}
+        </div>
+      </Container>
+
+      <Dialog open={active !== null} onOpenChange={(o) => !o && setActive(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-hairline bg-card sm:max-w-2xl">
+          {project && (
+            <>
+              <DialogHeader>
+                <p className="font-mono text-[11px] uppercase tracking-wider text-indigo-accent/80">
+                  {project.subtitle}
+                </p>
+                <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
+                  {project.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-wrap gap-1.5">
+                {project.badges.map((b) => (
+                  <span
+                    key={b}
+                    className="inline-flex items-center rounded-md border border-hairline bg-surface px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-2 flex flex-col gap-5">
+                {project.details.map((d) => (
+                  <div key={d.label}>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-indigo-accent">
+                      {d.label}
+                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {d.body}
+                    </p>
+                  </div>
+                ))}
+                {project.note && (
+                  <p className="rounded-lg border border-indigo-accent/30 bg-indigo-soft/10 p-4 text-sm leading-relaxed text-muted-foreground">
+                    {project.note}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
+function Process() {
+  return (
+    <section className="border-b border-hairline py-20 sm:py-24">
+      <Container>
+        <SectionHeader id="process" eyebrow="Process" title="How I build" />
+        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
+          {PROCESS_STEPS.map((s) => (
+            <div key={s.step} className="bg-card p-6 transition-colors hover:bg-surface-elevated">
+              <p className="font-mono text-xs text-indigo-accent">Step {s.step}</p>
+              <h3 className="mt-3 text-base font-semibold tracking-tight text-foreground">
+                {s.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {s.body}
+              </p>
+            </div>
           ))}
         </div>
       </Container>
     </section>
   );
 }
+
 
 function Capabilities() {
   return (

@@ -44,27 +44,108 @@ export const Route = createFileRoute("/")({
 
 const PROJECTS = [
   {
-    title: "Enterprise RAG Chatbot Widget",
+    title: "AI Chat Widget for E-Commerce & Support",
     subtitle: "Customer Support & Knowledge Retrieval",
     description:
-      "Context-aware, zero-hallucination web widget trained directly on custom business knowledge bases using Qdrant vector search and n8n orchestration.",
+      "Businesses receive repetitive customer questions that are already answered in their documentation and policies.",
     badges: ["Qdrant", "n8n", "OpenAI", "REST APIs"],
+    details: [
+      {
+        label: "Problem",
+        body: "Businesses receive repetitive customer questions that are already answered in their documentation, policies, and product information.",
+      },
+      {
+        label: "Solution",
+        body: "I built a website-embedded AI chatbot using a retrieval-augmented generation (RAG) architecture. The system retrieves relevant information from a structured knowledge base before generating an answer, allowing the assistant to respond using business-specific information instead of relying only on the model's general knowledge.",
+      },
+      {
+        label: "Architecture",
+        body: "Qdrant for vector search, OpenAI for LLM generation, n8n for orchestration, and REST APIs to manage the data flow.",
+      },
+      {
+        label: "Outcome",
+        body: "Provides customers with instant, accurate answers based on the company's own knowledge base while significantly reducing the need for repetitive manual support.",
+      },
+    ],
+    note: "💡 Live Demo: You are looking at it! The chat bubble in the bottom right of this website is a live instance of this system, trained on the Sewell.com e-commerce catalog and policies. Give it a try.",
   },
   {
     title: "Lead Intake & CRM Pipeline",
     subtitle: "Revenue Operations & Webhooks",
     description:
-      "Automated lead qualification, instant intent scoring, and routing pipeline connecting inbound webhooks to CRM systems.",
-    badges: ["Webhooks", "n8n", "Python", "CRM Integrations"],
+      "Inbound leads often require manual qualification and routing before a sales team can act.",
+    badges: ["n8n", "Webhooks", "Python", "CRM Integrations"],
+    details: [
+      {
+        label: "Problem",
+        body: "Inbound leads often require manual qualification, categorization, and routing before a sales team can act on them.",
+      },
+      {
+        label: "Solution",
+        body: "I built an automated lead intake pipeline that receives inbound data through webhooks, analyzes lead intent and information, qualifies the lead, and routes the result into the appropriate CRM or workflow.",
+      },
+      {
+        label: "Architecture",
+        body: "Built with n8n for workflow management, Python for custom logic and scoring, and webhooks for real-time data ingestion.",
+      },
+      {
+        label: "Outcome",
+        body: "Turns incoming lead data into structured, actionable information automatically and removes repetitive manual processing from the sales team's plate.",
+      },
+    ],
+    note: null,
   },
   {
     title: "Multi-Platform Messaging Assistant",
     subtitle: "API Integration & Workflows",
     description:
-      "Custom AI assistant integrated across WhatsApp Business API, Telegram, and internal email triggers for automated query resolution.",
-    badges: ["WhatsApp Business API", "Telegram API", "Postman"],
+      "Businesses across multiple messaging channels face fragmented workflows and repetitive questions.",
+    badges: ["WhatsApp API", "Telegram API", "n8n", "Postman"],
+    details: [
+      {
+        label: "Problem",
+        body: "Businesses communicating with customers across multiple messaging channels often have repetitive questions and fragmented workflows.",
+      },
+      {
+        label: "Solution",
+        body: "I built an AI-powered messaging assistant that connects business messaging channels to an AI system and automated backend workflows, allowing incoming questions to be processed and routed automatically based on intent.",
+      },
+      {
+        label: "Architecture",
+        body: "Using the WhatsApp Business API and Telegram API for channel connectivity, and n8n to orchestrate the automated reply and routing logic.",
+      },
+      {
+        label: "Outcome",
+        body: "Creates a more centralized, automated customer communication workflow that ensures no inquiry falls through the cracks across different platforms.",
+      },
+    ],
+    note: null,
   },
 ] as const;
+
+const PROCESS_STEPS = [
+  {
+    step: "01",
+    title: "Understand",
+    body: "I map the existing workflow, identify the bottlenecks, and define what should be automated.",
+  },
+  {
+    step: "02",
+    title: "Design",
+    body: "I design the system architecture around the business process, not around a specific tool.",
+  },
+  {
+    step: "03",
+    title: "Build",
+    body: "I connect the models, APIs, databases, webhooks, and automation logic into a working system.",
+  },
+  {
+    step: "04",
+    title: "Deploy",
+    body: "I test the system, refine the workflow, and make sure everything is ready for real-world deployment.",
+  },
+] as const;
+
 
 const CAPABILITIES = [
   {

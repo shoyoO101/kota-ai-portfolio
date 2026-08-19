@@ -196,7 +196,9 @@ function Index() {
         <Projects />
         <Capabilities />
         <TechStack />
+        <Process />
         <Contact />
+
       </main>
       <Footer />
     </div>

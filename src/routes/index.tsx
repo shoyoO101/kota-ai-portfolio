@@ -249,6 +249,13 @@ function Header() {
               Tech Stack
             </a>
             <a
+              href="#process"
+              className="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-block"
+            >
+              How I Build
+            </a>
+
+            <a
               href="#contact"
               className="inline-flex items-center rounded-md border border-hairline px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-indigo-accent/60 hover:bg-indigo-soft/10"
             >

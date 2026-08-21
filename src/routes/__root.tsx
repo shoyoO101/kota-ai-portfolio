@@ -130,6 +130,60 @@ function RootComponent() {
     cssLink.href = "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css";
     document.head.appendChild(cssLink);
 
+    // Premium dark theme for the n8n chat widget. The widget is themed via
+    // `--chat--*` CSS custom properties (see @n8n/chat docs). We pass the same
+    // values through the `theme` option AND inject them as a scoped <style>
+    // tag so they reliably take effect in the current runtime build.
+    const themeVars: Record<string, string> = {
+      "--chat--border-radius": "16px",
+      "--chat--window--border-radius": "16px",
+      "--chat--message--border-radius": "16px",
+      "--chat--window--border": "1px solid #2a2a2a",
+      // Body / footer — dark gray to match the site
+      "--chat--body--background": "#1a1a1a",
+      "--chat--footer--background": "#1a1a1a",
+      "--chat--footer--color": "#9a9a9a",
+      // Header — accent blue with white text
+      "--chat--header--background": "#4f7df3",
+      "--chat--header--color": "#ffffff",
+      // Chat bubbles
+      "--chat--message--bot--background": "#2a2a2a",
+      "--chat--message--bot--color": "#f0f0f0",
+      "--chat--message--user--background": "#4f7df3",
+      "--chat--message--user--color": "#ffffff",
+      // Input box — dark with accent focus border
+      "--chat--input--background": "#1a1a1a",
+      "--chat--input--text-color": "#f0f0f0",
+      "--chat--input--container--background": "#1a1a1a",
+      "--chat--input--container--border": "1px solid #2a2a2a",
+      "--chat--input--container--border-radius": "16px",
+      "--chat--input--send--button--background": "transparent",
+      "--chat--input--send--button--color": "#4f7df3",
+      "--chat--input--send--button--background-hover":
+        "rgba(79, 125, 243, 0.12)",
+      "--chat--input--send--button--color-hover": "#4f7df3",
+      // Floating trigger button — accent blue, rounded
+      "--chat--toggle--background": "#4f7df3",
+      "--chat--toggle--hover--background": "#4f7df3",
+      "--chat--toggle--active--background": "#4f7df3",
+      "--chat--toggle--color": "#ffffff",
+      "--chat--toggle--border-radius": "50%",
+    };
+
+    const themeCss =
+      `.n8n-chat {\n` +
+      Object.entries(themeVars)
+        .map(([k, v]) => `  ${k}: ${v};`)
+        .join("\n") +
+      `\n}\n` +
+      `.n8n-chat .chat-inputs:focus-within { border-color: #4f7df3 !important; }\n` +
+      `.n8n-chat .chat-inputs textarea::placeholder { color: #8a8a8a; }\n`;
+
+    const styleEl = document.createElement("style");
+    styleEl.setAttribute("data-n8n-chat-theme", "kota");
+    styleEl.textContent = themeCss;
+    document.head.appendChild(styleEl);
+
     // Load n8n chat widget script and initialize
     let cancelled = false;
     import("https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js")
@@ -138,6 +192,17 @@ function RootComponent() {
         createChat({
           webhookUrl:
             "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat",
+          initialMessages: [
+            "👋 Hi there! I'm a live AI demo trained on Sewell.com's e-commerce catalog. Ask me about their shipping times, return policies, or product recommendations to see how this works!",
+          ],
+          i18n: {
+            en: {
+              title: "Kota AI | E-Commerce Demo",
+              subtitle: "Ask me anything about products, shipping, or returns.",
+              inputPlaceholder: "Type your question...",
+            },
+          },
+          theme: themeVars,
         });
       })
       .catch((err) => {
@@ -146,6 +211,8 @@ function RootComponent() {
 
     return () => {
       cancelled = true;
+      styleEl.remove();
+      cssLink.remove();
     };
   }, []);
 

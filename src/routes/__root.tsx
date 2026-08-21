@@ -123,6 +123,32 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    // Load n8n chat widget styles
+    const cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css";
+    document.head.appendChild(cssLink);
+
+    // Load n8n chat widget script and initialize
+    let cancelled = false;
+    import("https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js")
+      .then(({ createChat }) => {
+        if (cancelled || typeof createChat !== "function") return;
+        createChat({
+          webhookUrl:
+            "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load n8n chat widget", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

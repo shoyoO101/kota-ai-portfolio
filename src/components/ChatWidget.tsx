@@ -216,7 +216,7 @@ export function ChatWidget() {
 
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => toggle(!open)}
         aria-label={open ? "Close chat" : "Open chat"}
         className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-105"
         style={{ background: "#4f7df3" }}

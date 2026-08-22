@@ -27,6 +27,7 @@ function extractReply(data: unknown): string {
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -41,6 +42,21 @@ export function ChatWidget() {
       behavior: "smooth",
     });
   }, [messages, open]);
+
+  // Keep the panel mounted during the closing transition so the exit
+  // animation can play out before unmounting.
+  const mounted = open || closing;
+
+  function toggle(next: boolean) {
+    if (next) {
+      setOpen(true);
+      setClosing(false);
+    } else {
+      setClosing(true);
+      setOpen(false);
+      window.setTimeout(() => setClosing(false), 230);
+    }
+  }
 
   async function send() {
     const text = input.trim();
@@ -86,10 +102,16 @@ export function ChatWidget() {
 
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
-      {open && (
+      {mounted && (
         <div
-          className="flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl"
-          style={{ background: "#1a1a1a", borderRadius: 16 }}
+          aria-hidden={!open}
+          className={
+            "flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl transition-all duration-200 ease-out " +
+            (open
+              ? "translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none translate-y-2 scale-95 opacity-0")
+          }
+          style={{ background: "#1a1a1a", borderRadius: 16, transformOrigin: "bottom right" }}
         >
           {/* Header */}
           <div
@@ -98,7 +120,7 @@ export function ChatWidget() {
           >
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => toggle(false)}
               aria-label="Close chat"
               className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
             >
@@ -194,7 +216,7 @@ export function ChatWidget() {
 
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => toggle(!open)}
         aria-label={open ? "Close chat" : "Open chat"}
         className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-105"
         style={{ background: "#4f7df3" }}

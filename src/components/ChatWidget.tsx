@@ -106,10 +106,10 @@ export function ChatWidget() {
         <div
           aria-hidden={!open}
           className={
-            "flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl transition-all duration-200 ease-out " +
+            "flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl " +
             (open
-              ? "translate-y-0 scale-100 opacity-100"
-              : "pointer-events-none translate-y-2 scale-95 opacity-0")
+              ? "animate-[chat-in_280ms_ease-out] opacity-100 translate-y-0 scale-100"
+              : "pointer-events-none translate-y-2 scale-95 opacity-0 transition-all duration-200 ease-out")
           }
           style={{ background: "#1a1a1a", borderRadius: 16, transformOrigin: "bottom right" }}
         >

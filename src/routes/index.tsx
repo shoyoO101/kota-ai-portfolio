@@ -623,11 +623,11 @@ function Contact() {
               Reach out directly or leave a message below.
             </p>
             <a
-              href="mailto:kareem@trykotaai.com"
+              href="mailto:kareem@hellokotaai.com"
               className="group mt-6 inline-flex items-center gap-2 self-start rounded-md border border-hairline bg-surface px-3.5 py-2 font-mono text-sm text-foreground transition-colors hover:border-indigo-accent/60 hover:bg-indigo-soft/10"
             >
               <span className="text-indigo-accent">@</span>
-              kareem@trykotaai.com
+              kareem@hellokotaai.com
               <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>

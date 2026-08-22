@@ -642,6 +642,9 @@ function Contact() {
 
 function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const send = useServerFn(submitContact);
 
   if (submitted) {
     return (
@@ -662,9 +665,27 @@ function ContactForm() {
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        setSubmitted(true);
+        const fd = new FormData(e.currentTarget);
+        setError(null);
+        setSending(true);
+        try {
+          await send({
+            data: {
+              name: String(fd.get("name") ?? ""),
+              email: String(fd.get("email") ?? ""),
+              message: String(fd.get("message") ?? ""),
+            },
+          });
+          setSubmitted(true);
+        } catch {
+          setError(
+            "Something went wrong sending your message. Please email kareem@hellokotaai.com directly.",
+          );
+        } finally {
+          setSending(false);
+        }
       }}
       className="flex flex-col gap-4"
     >

@@ -1,0 +1,26 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "hellokotaai.com"
+        }
+      ],
+      "destination": "https://trykotaai.com/verify",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.hellokotaai.com"
+        }
+      ],
+      "destination": "https://trykotaai.com/verify",
+      "permanent": true
+    }
+  ]
+}

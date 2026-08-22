@@ -27,6 +27,7 @@ function extractReply(data: unknown): string {
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -41,6 +42,21 @@ export function ChatWidget() {
       behavior: "smooth",
     });
   }, [messages, open]);
+
+  // Keep the panel mounted during the closing transition so the exit
+  // animation can play out before unmounting.
+  const mounted = open || closing;
+
+  function toggle(next: boolean) {
+    if (next) {
+      setOpen(true);
+      setClosing(false);
+    } else {
+      setClosing(true);
+      setOpen(false);
+      window.setTimeout(() => setClosing(false), 230);
+    }
+  }
 
   async function send() {
     const text = input.trim();

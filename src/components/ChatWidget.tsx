@@ -102,10 +102,16 @@ export function ChatWidget() {
 
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
-      {open && (
+      {mounted && (
         <div
-          className="flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl"
-          style={{ background: "#1a1a1a", borderRadius: 16 }}
+          aria-hidden={!open}
+          className={
+            "flex h-[min(600px,calc(100vh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden border border-hairline shadow-2xl transition-all duration-200 ease-out " +
+            (open
+              ? "translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none translate-y-2 scale-95 opacity-0")
+          }
+          style={{ background: "#1a1a1a", borderRadius: 16, transformOrigin: "bottom right" }}
         >
           {/* Header */}
           <div
@@ -114,7 +120,7 @@ export function ChatWidget() {
           >
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => toggle(false)}
               aria-label="Close chat"
               className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
             >

@@ -10,10 +10,8 @@ const schema = z.object({
 export const submitContact = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
-    const webhookUrl = process.env["N8N_CONTACT_WEBHOOK_URL"];
-    if (!webhookUrl) {
-      throw new Error("Contact webhook is not configured.");
-    }
+    const webhookUrl =
+      "https://n8n.trykotaai.com/webhook/222cd0d5-649c-4e81-bbb4-8361831dab51";
 
     const res = await fetch(webhookUrl, {
       method: "POST",

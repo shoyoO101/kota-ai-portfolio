@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, ArrowUp } from "lucide-react";
 
 const WEBHOOK_URL =
-  "https://n8n.trykotaai.com/webhook/222cd0d5-649c-4e81-bbb4-8361831dab51";
+  "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat";
 
 const WELCOME =
   "👋 Hi there! I'm a live AI demo trained on Sewell.com's e-commerce catalog. Ask me about their shipping times, return policies, or product recommendations to see how this works!";

@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { submitContact } from "@/lib/contact.functions";
 import {
   Dialog,
   DialogContent,
@@ -722,11 +724,17 @@ function ContactForm() {
           className="w-full resize-none rounded-md border border-hairline bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-indigo-accent/60 focus:ring-2 focus:ring-ring"
         />
       </Field>
+      {error && (
+        <p className="rounded-md border border-hairline bg-surface px-3 py-2 text-xs text-muted-foreground">
+          {error}
+        </p>
+      )}
       <button
         type="submit"
-        className="group inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)]"
+        disabled={sending}
+        className="group inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send Message
+        {sending ? "Sending..." : "Send Message"}
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </button>
     </form>

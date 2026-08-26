@@ -11,7 +11,7 @@ const QUICK_REPLIES = [
   "What is your warranty policy?",
   "What is your return policy?",
   "Do you ship internationally?",
-  "Can you recommend a product for me?",
+  "What is the difference between an HDMI splitter and a switch?",
 ];
 
 type ChatMessage = { id: string; role: "bot" | "user"; text: string };

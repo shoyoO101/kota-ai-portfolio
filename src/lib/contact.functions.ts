@@ -11,7 +11,7 @@ export const submitContact = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const webhookUrl =
-      "https://n8n.trykotaai.com/webhook/222cd0d5-649c-4e81-bbb4-8361831dab51";
+      "https://n8n.trykotaai.com/webhook/1ecfa6ff-7909-4493-b0a1-faef3da620ce";
 
     const res = await fetch(webhookUrl, {
       method: "POST",

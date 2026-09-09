@@ -729,14 +729,20 @@ function ContactForm() {
           {error}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={sending}
-        className="group inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)] disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {sending ? "Sending..." : "Send Message"}
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </button>
+      <div>
+        <button
+          type="submit"
+          disabled={sending}
+          className="group inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.4),0_8px_24px_-12px_oklch(0.66_0.13_268/0.6)] transition-all hover:shadow-[0_0_0_1px_oklch(0.66_0.13_268/0.6),0_12px_32px_-10px_oklch(0.66_0.13_268/0.7)] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {sending ? "Sending..." : "Send Message"}
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </button>
+        <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground/60">
+          I'll reply within 24 hours with a quick look at how this could work for
+          your site.
+        </p>
+      </div>
     </form>
   );
 }

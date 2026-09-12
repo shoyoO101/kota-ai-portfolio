@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Markdown, { type Components } from "react-markdown";
 import { Send, X } from "lucide-react";
 
 export const CHAT_WEBHOOK_URL =
@@ -18,6 +19,37 @@ type ChatMessage = { id: string; role: "bot" | "user"; text: string };
 
 function newId() {
   return crypto.randomUUID();
+}
+
+const markdownComponents: Components = {
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+  em: ({ children }) => <em>{children}</em>,
+  ul: ({ children }) => (
+    <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>
+  ),
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-medium text-[#4f7df3] underline underline-offset-2 hover:opacity-80"
+    >
+      {children}
+    </a>
+  ),
+};
+
+function BotMessage({ text }: { text: string }) {
+  return (
+    <div className="text-inherit [overflow-wrap:anywhere]">
+      <Markdown components={markdownComponents}>{text}</Markdown>
+    </div>
+  );
 }
 
 function getOrCreateSessionId(storageKey: string) {
@@ -193,7 +225,7 @@ export function ChatPanel({
                 : { background: "#1a1a1a", borderRadius: 24, color: "#f0f0f0" }
             }
           >
-            {m.text}
+            {m.role === "bot" ? <BotMessage text={m.text} /> : m.text}
           </div>
         ))}
 

@@ -56,7 +56,7 @@ const PROJECTS = [
     title: "AI Chat Widget for E-Commerce & Support",
     subtitle: "Customer Support & Knowledge Retrieval",
     description:
-      "Businesses receive repetitive customer questions that are already answered in their documentation and policies.",
+      "Businesses receive repetitive customer questions, miss buying signals in chat, and need live pricing without manual updates. This assistant answers from documentation, captures leads automatically, and pulls real-time pricing from the store's live inventory.",
     badges: ["Qdrant", "n8n", "OpenAI", "REST APIs"],
     details: [
       {
@@ -65,7 +65,7 @@ const PROJECTS = [
       },
       {
         label: "Solution",
-        body: "I built a website-embedded AI chatbot using a retrieval-augmented generation (RAG) architecture. The system retrieves relevant information from a structured knowledge base before generating an answer, allowing the assistant to respond using business-specific information instead of relying only on the model's general knowledge.",
+        body: "I built a website-embedded AI chatbot using a retrieval-augmented generation (RAG) architecture. The system retrieves relevant information from a structured knowledge base before generating an answer, allowing the assistant to respond using business-specific information instead of relying only on the model's general knowledge. Beyond answering FAQs, the assistant also detects buying intent in conversation, collects contact info conversationally, and logs structured leads to a CRM sheet — merging multiple product interests from the same conversation into one record. It's also connected to live Shopify inventory for real-time price and stock lookups on select products, rather than relying on static, potentially outdated pricing data.",
       },
       {
         label: "Architecture",
@@ -73,59 +73,59 @@ const PROJECTS = [
       },
       {
         label: "Outcome",
-        body: "Provides customers with instant, accurate answers based on the company's own knowledge base while significantly reducing the need for repetitive manual support.",
+        body: "Provides customers with instant, accurate answers based on the company's own knowledge base, captures qualified leads automatically without manual follow-up, and gives accurate real-time pricing — all while significantly reducing the need for repetitive manual support.",
       },
     ],
     note: "💡 Live Demo: You are looking at it! The chat bubble in the bottom right of this website is a live instance of this system, trained on the Sewell.com e-commerce catalog and policies. Give it a try.",
   },
   {
-    title: "Lead Intake & CRM Pipeline",
-    subtitle: "Revenue Operations & Webhooks",
+    title: "Student Onboarding & Follow-Up Automation",
+    subtitle: "Education & Lifecycle Automation",
     description:
-      "Inbound leads often require manual qualification and routing before a sales team can act.",
-    badges: ["n8n", "Webhooks", "Python", "CRM Integrations"],
+      "New students often drop off before completing account setup, leaving manual follow-up to the team. This system automates the entire onboarding lifecycle from payment to completion.",
+    badges: ["n8n", "Gmail", "Slack", "Google Sheets"],
     details: [
       {
         label: "Problem",
-        body: "Inbound leads often require manual qualification, categorization, and routing before a sales team can act on them.",
+        body: "When a student enrolls in an online academy, someone on the team has to manually welcome them, track whether they've set up their account, chase unresponsive students, and update records by hand — an easy process to let slip through the cracks.",
       },
       {
         label: "Solution",
-        body: "I built an automated lead intake pipeline that receives inbound data through webhooks, analyzes lead intent and information, qualifies the lead, and routes the result into the appropriate CRM or workflow.",
+        body: "I built a multi-stage onboarding pipeline triggered by a payment webhook. On payment, the student receives a welcome email with an account setup link, the team is notified in Slack, and the student's info is logged to a tracking sheet. If the student hasn't created their account after a few days, an automated reminder email goes out. If they still haven't after 5 days, the team is notified for manual human follow-up, and the record is updated to reflect that. Once the student completes their account and fills out an onboarding form, an AI agent reads their form responses and generates a personalized motivational welcome email based on their specific goals — then updates the tracking sheet and notifies the team that this student is fully onboarded.",
       },
       {
         label: "Architecture",
-        body: "Built with n8n for workflow management, Python for custom logic and scoring, and webhooks for real-time data ingestion.",
+        body: "Built with n8n for workflow orchestration, a payment webhook as the trigger, scheduled follow-up checks, Gmail for automated and AI-personalized emails, Slack for team notifications, Google Sheets for status tracking, and an AI agent with structured output to generate the personalized motivational email from form data.",
       },
       {
         label: "Outcome",
-        body: "Turns incoming lead data into structured, actionable information automatically and removes repetitive manual processing from the sales team's plate.",
+        body: "Removes manual tracking and follow-up entirely from the team's plate, ensures no student is forgotten, and adds a personal touch — genuinely relevant, form-based motivational emails — that a purely manual process wouldn't have time to do for every student.",
       },
     ],
     note: null,
   },
   {
-    title: "Multi-Platform Messaging Assistant",
-    subtitle: "API Integration & Workflows",
+    title: "Voice-Enabled Personal AI Assistant",
+    subtitle: "Personal Automation & Voice AI",
     description:
-      "Businesses across multiple messaging channels face fragmented workflows and repetitive questions.",
-    badges: ["WhatsApp API", "Telegram API", "n8n", "Postman"],
+      "A Telegram-based personal assistant that understands voice messages, manages contacts, searches the web, and posts to social media — all through natural conversation.",
+    badges: ["Telegram API", "OpenAI", "Google Sheets", "X (Twitter) API"],
     details: [
       {
         label: "Problem",
-        body: "Businesses communicating with customers across multiple messaging channels often have repetitive questions and fragmented workflows.",
+        body: "Switching between apps to search the web, manage contacts, check a calendar, or post to social media is repetitive friction for everyday personal tasks — especially when on the go and typing isn't convenient.",
       },
       {
         label: "Solution",
-        body: "I built an AI-powered messaging assistant that connects business messaging channels to an AI system and automated backend workflows, allowing incoming questions to be processed and routed automatically based on intent.",
+        body: "I built a personal AI assistant accessible entirely through Telegram, including by voice. Voice messages are transcribed automatically, processed by an AI agent, and can be answered back in voice or text. The agent has access to several specialized tools: a search agent (Wikipedia and SerpAPI) for answering questions, a contact agent that adds new contacts (name, email, phone) directly to a tracking sheet from a spoken or typed request, a calendar tool, a Gmail tool, and the ability to post directly to X (Twitter) on request.",
       },
       {
         label: "Architecture",
-        body: "Using the WhatsApp Business API and Telegram API for channel connectivity, and n8n to orchestrate the automated reply and routing logic.",
+        body: "Built with n8n, using a Telegram trigger to receive messages and voice notes, audio transcription for voice input, an AI agent (with conversation memory) that routes requests to sub-workflow tools — search, contacts, calendar, email, and X posting — and text-to-speech generation for voice replies.",
       },
       {
         label: "Outcome",
-        body: "Creates a more centralized, automated customer communication workflow that ensures no inquiry falls through the cracks across different platforms.",
+        body: "Turns everyday personal tasks — looking something up, saving a new contact, posting an update, checking a schedule — into a single natural conversation, usable entirely by voice, without switching between apps.",
       },
     ],
     note: null,

@@ -13,6 +13,7 @@ const QUICK_REPLIES = [
   "What is your return policy?",
   "Do you ship internationally?",
   "What is the difference between an HDMI splitter and a switch?",
+  "How much is the Braided 8K HDMI 2.1 Cable?",
 ];
 
 type ChatMessage = { id: string; role: "bot" | "user"; text: string };
@@ -191,6 +192,10 @@ export function ChatPanel({
         </div>
         <p className="mt-2 text-center text-xs leading-relaxed text-white/50">
           Ask about products, shipping, or returns.
+        </p>
+        <p className="mt-1 text-center text-xs leading-relaxed text-white/40">
+          Try live pricing on: HDMI Cable, Banana Plugs, IR Repeater, Lightning
+          Cable, or Speaker Wire
         </p>
       </header>
 

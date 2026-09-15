@@ -214,7 +214,7 @@ export function ChatPanel({
               key={prompt}
               type="button"
               onClick={() => void send(prompt)}
-              className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 transition-colors hover:bg-[#2a2a2a]"
+              className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
               style={{ background: "#1a1a1a" }}
             >
               {prompt}

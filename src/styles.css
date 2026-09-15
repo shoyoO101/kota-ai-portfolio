@@ -126,14 +126,25 @@
   text-wrap: balance;
 }
 
-/* Chat widget entrance: fade + slight slide-up + scale from 95% to 100%. */
+/* Chat widget open/close: fade + slide + scale. */
 @keyframes chat-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.95);
+    transform: translateY(18px) scale(0.94);
   }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chat-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
   }
 }

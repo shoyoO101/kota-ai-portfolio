@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { ChatPanel, FLOATING_SESSION_KEY } from "./ChatPanel";
 
 export function ChatWidget() {
@@ -14,7 +14,7 @@ export function ChatWidget() {
     } else {
       setClosing(true);
       setOpen(false);
-      window.setTimeout(() => setClosing(false), 230);
+      window.setTimeout(() => setClosing(false), 240);
     }
   }
 
@@ -25,8 +25,8 @@ export function ChatWidget() {
           aria-hidden={!open}
           className={
             open
-              ? "animate-[chat-in_280ms_ease-out] opacity-100 translate-y-0 scale-100"
-              : "pointer-events-none translate-y-2 scale-95 opacity-0 transition-all duration-200 ease-out"
+              ? "animate-[chat-in_320ms_cubic-bezier(0.16,1,0.3,1)_forwards]"
+              : "pointer-events-none animate-[chat-out_240ms_ease_forwards]"
           }
           style={{ transformOrigin: "bottom right" }}
         >
@@ -34,22 +34,24 @@ export function ChatWidget() {
             sessionKey={FLOATING_SESSION_KEY}
             onClose={() => toggle(false)}
             autoFocus={open}
-            className="h-[min(640px,calc(100vh-7.5rem))] w-[min(380px,calc(100vw-2.5rem))]"
+            className="h-[min(700px,calc(100vh-7.5rem))] w-[min(380px,calc(100vw-2.5rem))]"
           />
         </div>
       )}
 
-      {!mounted && (
-        <button
-          type="button"
-          onClick={() => toggle(true)}
-          aria-label="Open chat"
-          className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-105"
-          style={{ background: "#4f7df3" }}
-        >
+      <button
+        type="button"
+        onClick={() => toggle(!open)}
+        aria-label={open ? "Close chat" : "Open chat"}
+        className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-105"
+        style={{ background: "#4f7df3" }}
+      >
+        {open ? (
+          <X size={24} strokeWidth={1.75} className="text-current" aria-hidden />
+        ) : (
           <MessageCircle className="h-6 w-6" />
-        </button>
-      )}
+        )}
+      </button>
     </div>
   );
 }

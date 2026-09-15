@@ -172,7 +172,12 @@ export function ChatPanel({
             aria-label="Close chat"
             className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800/60 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
           >
-            <X className="h-4 w-4" strokeWidth={2.5} />
+            <X
+              size={18}
+              strokeWidth={1.75}
+              className="text-current"
+              aria-hidden
+            />
           </button>
         )}
         <div
@@ -201,7 +206,7 @@ export function ChatPanel({
 
       <div
         ref={scrollRef}
-        className="flex flex-1 flex-col gap-3 overflow-y-auto px-5 py-2"
+        className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-5 py-3"
       >
         {showPills &&
           QUICK_REPLIES.map((prompt) => (
@@ -221,8 +226,8 @@ export function ChatPanel({
             key={m.id}
             className={
               m.role === "user"
-                ? "max-w-[85%] self-end px-4 py-2.5 text-sm leading-relaxed text-white"
-                : "max-w-[90%] self-start px-4 py-2.5 text-sm leading-relaxed"
+                ? "max-w-[85%] self-end px-3.5 py-2.5 text-sm leading-relaxed text-white"
+                : "max-w-[90%] self-start px-3.5 py-2.5 text-sm leading-relaxed"
             }
             style={
               m.role === "user"
@@ -236,22 +241,25 @@ export function ChatPanel({
 
         {sending && (
           <div
-            className="max-w-[60%] self-start px-4 py-3"
+            className="max-w-[85%] self-start px-3.5 py-2.5"
             style={{ background: "#1a1a1a", borderRadius: 24 }}
             aria-label="Assistant is typing"
           >
-            <span className="flex gap-1">
-              {[0, 150, 300].map((d) => (
-                <span
-                  key={d}
-                  className="h-1.5 w-1.5 animate-bounce rounded-full"
-                  style={{
-                    background: "#4f7df3",
-                    animationDelay: `${d}ms`,
-                  }}
-                />
-              ))}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs leading-none text-white/50">Typing...</span>
+              <span className="flex gap-1">
+                {[0, 150, 300].map((d) => (
+                  <span
+                    key={d}
+                    className="h-1.5 w-1.5 animate-bounce rounded-full"
+                    style={{
+                      background: "#4f7df3",
+                      animationDelay: `${d}ms`,
+                    }}
+                  />
+                ))}
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -261,7 +269,7 @@ export function ChatPanel({
           e.preventDefault();
           void send();
         }}
-        className="shrink-0 px-4 pb-4 pt-2"
+        className="shrink-0 px-4 pb-4 pt-3"
       >
         <div
           className="flex items-center gap-2 rounded-full px-4 py-2"
@@ -282,7 +290,12 @@ export function ChatPanel({
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:opacity-40"
             style={{ background: "#4f7df3" }}
           >
-            <Send className="h-4 w-4" />
+            <Send
+              size={18}
+              strokeWidth={1.75}
+              className="text-current"
+              aria-hidden
+            />
           </button>
         </div>
       </form>

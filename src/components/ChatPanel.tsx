@@ -127,7 +127,7 @@ export function ChatPanel({
           message: text,
           chatInput: text,
           action: "sendMessage",
-          sessionId: sessionId.current,
+          sessionId,
         }),
       });
       const rawBody = await res.text();

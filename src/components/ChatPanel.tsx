@@ -208,18 +208,21 @@ export function ChatPanel({
         ref={scrollRef}
         className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-5 py-3"
       >
-        {showPills &&
-          QUICK_REPLIES.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() => void send(prompt)}
-              className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
-              style={{ background: "#1a1a1a" }}
-            >
-              {prompt}
-            </button>
-          ))}
+        {showPills && (
+          <div className="flex flex-wrap gap-2">
+            {QUICK_REPLIES.map((pill) => (
+              <button
+                key={pill.label}
+                type="button"
+                onClick={() => void send(pill.message)}
+                className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
+                style={{ background: "#1a1a1a" }}
+              >
+                {pill.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {messages.map((m) => (
           <div

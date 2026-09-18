@@ -66,17 +66,6 @@ function BotMessage({ text }: { text: string }) {
   );
 }
 
-function getOrCreateSessionId(storageKey: string) {
-  try {
-    const existing = localStorage.getItem(storageKey);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    localStorage.setItem(storageKey, id);
-    return id;
-  } catch {
-    return crypto.randomUUID();
-  }
-}
 
 function extractReply(data: unknown): string {
   if (typeof data === "string" && data.trim()) return data;

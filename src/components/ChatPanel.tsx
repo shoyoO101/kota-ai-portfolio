@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Markdown, { type Components } from "react-markdown";
 import { Send, X } from "lucide-react";
+import {
+  getSessionId,
+  newId,
+  setMessages,
+  useChatMessages,
+} from "../lib/chat-session";
 
 export const CHAT_WEBHOOK_URL =
   "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat";
@@ -8,19 +14,26 @@ export const CHAT_WEBHOOK_URL =
 export const FLOATING_SESSION_KEY = "kota-ai-chat-session-id";
 export const INLINE_SESSION_KEY = "kota-ai-chat-session-id-inline";
 
-const QUICK_REPLIES = [
-  "What is your warranty policy?",
-  "What is your return policy?",
-  "Do you ship internationally?",
-  "What is the difference between an HDMI splitter and a switch?",
-  "How much is the Braided 8K HDMI 2.1 Cable?",
+const QUICK_REPLIES: { label: string; message: string }[] = [
+  {
+    label: "Help me find a product",
+    message: "Help me find a product — what type of product do you have?",
+  },
+  {
+    label: "Shipping & Returns",
+    message: "What are your shipping options and return policy?",
+  },
+  {
+    label: "Check a product's price",
+    message: "I'd like to check a product's price.",
+  },
+  {
+    label: "Help me choose a product",
+    message:
+      "Help me choose the right product for my setup — what do you need to know?",
+  },
 ];
 
-type ChatMessage = { id: string; role: "bot" | "user"; text: string };
-
-function newId() {
-  return crypto.randomUUID();
-}
 
 const markdownComponents: Components = {
   p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -53,17 +66,6 @@ function BotMessage({ text }: { text: string }) {
   );
 }
 
-function getOrCreateSessionId(storageKey: string) {
-  try {
-    const existing = localStorage.getItem(storageKey);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    localStorage.setItem(storageKey, id);
-    return id;
-  } catch {
-    return crypto.randomUUID();
-  }
-}
 
 function extractReply(data: unknown): string {
   if (typeof data === "string" && data.trim()) return data;
@@ -91,15 +93,10 @@ export function ChatPanel({
 }) {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const sessionId = useRef("");
+  const messages = useChatMessages(sessionKey);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const showPills = messages.length === 0 && !sending;
-
-  useEffect(() => {
-    sessionId.current = getOrCreateSessionId(sessionKey);
-  }, [sessionKey]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -115,9 +112,12 @@ export function ChatPanel({
   async function send(raw?: string) {
     const text = (raw ?? input).trim();
     if (!text || sending) return;
-    if (!sessionId.current) sessionId.current = getOrCreateSessionId(sessionKey);
+    const sessionId = getSessionId(sessionKey);
     setInput("");
-    setMessages((prev) => [...prev, { id: newId(), role: "user", text }]);
+    setMessages(sessionKey, (prev) => [
+      ...prev,
+      { id: newId(), role: "user", text },
+    ]);
     setSending(true);
     try {
       const res = await fetch(CHAT_WEBHOOK_URL, {
@@ -127,7 +127,7 @@ export function ChatPanel({
           message: text,
           chatInput: text,
           action: "sendMessage",
-          sessionId: sessionId.current,
+          sessionId,
         }),
       });
       const rawBody = await res.text();
@@ -137,12 +137,12 @@ export function ChatPanel({
       } catch {
         /* plain text response */
       }
-      setMessages((prev) => [
+      setMessages(sessionKey, (prev) => [
         ...prev,
         { id: newId(), role: "bot", text: extractReply(parsed) },
       ]);
     } catch {
-      setMessages((prev) => [
+      setMessages(sessionKey, (prev) => [
         ...prev,
         {
           id: newId(),
@@ -208,18 +208,21 @@ export function ChatPanel({
         ref={scrollRef}
         className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-5 py-3"
       >
-        {showPills &&
-          QUICK_REPLIES.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() => void send(prompt)}
-              className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
-              style={{ background: "#1a1a1a" }}
-            >
-              {prompt}
-            </button>
-          ))}
+        {showPills && (
+          <div className="flex flex-wrap gap-2">
+            {QUICK_REPLIES.map((pill) => (
+              <button
+                key={pill.label}
+                type="button"
+                onClick={() => void send(pill.message)}
+                className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
+                style={{ background: "#1a1a1a" }}
+              >
+                {pill.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {messages.map((m) => (
           <div

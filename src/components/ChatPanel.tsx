@@ -137,12 +137,12 @@ export function ChatPanel({
       } catch {
         /* plain text response */
       }
-      setMessages((prev) => [
+      setMessages(sessionKey, (prev) => [
         ...prev,
         { id: newId(), role: "bot", text: extractReply(parsed) },
       ]);
     } catch {
-      setMessages((prev) => [
+      setMessages(sessionKey, (prev) => [
         ...prev,
         {
           id: newId(),

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { sendChatMessage } from "../lib/chat.functions";
 import Markdown, { type Components } from "react-markdown";
 import { Send, X } from "lucide-react";
 import {
@@ -91,6 +93,7 @@ export function ChatPanel({
   className?: string;
   autoFocus?: boolean;
 }) {
+  const sendChat = useServerFn(sendChatMessage);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const messages = useChatMessages(sessionKey);
@@ -120,17 +123,14 @@ export function ChatPanel({
     ]);
     setSending(true);
     try {
-      const res = await fetch(CHAT_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { body: rawBody } = await sendChat({
+        data: {
           message: text,
           chatInput: text,
           action: "sendMessage",
           sessionId,
-        }),
+        },
       });
-      const rawBody = await res.text();
       let parsed: unknown = rawBody;
       try {
         parsed = JSON.parse(rawBody);

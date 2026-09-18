@@ -93,15 +93,10 @@ export function ChatPanel({
 }) {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const sessionId = useRef("");
+  const messages = useChatMessages(sessionKey);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const showPills = messages.length === 0 && !sending;
-
-  useEffect(() => {
-    sessionId.current = getOrCreateSessionId(sessionKey);
-  }, [sessionKey]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -117,9 +112,12 @@ export function ChatPanel({
   async function send(raw?: string) {
     const text = (raw ?? input).trim();
     if (!text || sending) return;
-    if (!sessionId.current) sessionId.current = getOrCreateSessionId(sessionKey);
+    const sessionId = getSessionId(sessionKey);
     setInput("");
-    setMessages((prev) => [...prev, { id: newId(), role: "user", text }]);
+    setMessages(sessionKey, (prev) => [
+      ...prev,
+      { id: newId(), role: "user", text },
+    ]);
     setSending(true);
     try {
       const res = await fetch(CHAT_WEBHOOK_URL, {

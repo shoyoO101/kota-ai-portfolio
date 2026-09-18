@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Markdown, { type Components } from "react-markdown";
 import { Send, X } from "lucide-react";
+import {
+  getSessionId,
+  newId,
+  setMessages,
+  useChatMessages,
+} from "../lib/chat-session";
 
 export const CHAT_WEBHOOK_URL =
   "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat";
@@ -8,19 +14,26 @@ export const CHAT_WEBHOOK_URL =
 export const FLOATING_SESSION_KEY = "kota-ai-chat-session-id";
 export const INLINE_SESSION_KEY = "kota-ai-chat-session-id-inline";
 
-const QUICK_REPLIES = [
-  "What is your warranty policy?",
-  "What is your return policy?",
-  "Do you ship internationally?",
-  "What is the difference between an HDMI splitter and a switch?",
-  "How much is the Braided 8K HDMI 2.1 Cable?",
+const QUICK_REPLIES: { label: string; message: string }[] = [
+  {
+    label: "Help me find a product",
+    message: "Help me find a product — what type of product do you have?",
+  },
+  {
+    label: "Shipping & Returns",
+    message: "What are your shipping options and return policy?",
+  },
+  {
+    label: "Check a product's price",
+    message: "I'd like to check a product's price.",
+  },
+  {
+    label: "Help me choose a product",
+    message:
+      "Help me choose the right product for my setup — what do you need to know?",
+  },
 ];
 
-type ChatMessage = { id: string; role: "bot" | "user"; text: string };
-
-function newId() {
-  return crypto.randomUUID();
-}
 
 const markdownComponents: Components = {
   p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,

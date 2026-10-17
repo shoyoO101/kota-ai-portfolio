@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HermesOutreachRouteImport } from './routes/hermes-outreach'
+import { Route as HermesPrivacyRouteImport } from './routes/hermes-privacy'
 import { Route as VerifyRouteImport } from './routes/verify'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HermesOutreachRoute = HermesOutreachRouteImport.update({
+  id: '/hermes-outreach',
+  path: '/hermes-outreach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HermesPrivacyRoute = HermesPrivacyRouteImport.update({
+  id: '/hermes-privacy',
+  path: '/hermes-privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifyRoute = VerifyRouteImport.update({
@@ -25,27 +37,35 @@ const VerifyRoute = VerifyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hermes-outreach': typeof HermesOutreachRoute
+  '/hermes-privacy': typeof HermesPrivacyRoute
   '/verify': typeof VerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hermes-outreach': typeof HermesOutreachRoute
+  '/hermes-privacy': typeof HermesPrivacyRoute
   '/verify': typeof VerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hermes-outreach': typeof HermesOutreachRoute
+  '/hermes-privacy': typeof HermesPrivacyRoute
   '/verify': typeof VerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/verify'
+  fullPaths: '/' | '/hermes-outreach' | '/hermes-privacy' | '/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/verify'
-  id: '__root__' | '/' | '/verify'
+  to: '/' | '/hermes-outreach' | '/hermes-privacy' | '/verify'
+  id: '__root__' | '/' | '/hermes-outreach' | '/hermes-privacy' | '/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HermesOutreachRoute: typeof HermesOutreachRoute
+  HermesPrivacyRoute: typeof HermesPrivacyRoute
   VerifyRoute: typeof VerifyRoute
 }
 
@@ -56,6 +76,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hermes-outreach': {
+      id: '/hermes-outreach'
+      path: '/hermes-outreach'
+      fullPath: '/hermes-outreach'
+      preLoaderRoute: typeof HermesOutreachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hermes-privacy': {
+      id: '/hermes-privacy'
+      path: '/hermes-privacy'
+      fullPath: '/hermes-privacy'
+      preLoaderRoute: typeof HermesPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verify': {
@@ -70,6 +104,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HermesOutreachRoute: HermesOutreachRoute,
+  HermesPrivacyRoute: HermesPrivacyRoute,
   VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport

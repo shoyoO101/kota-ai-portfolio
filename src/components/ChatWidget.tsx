@@ -34,7 +34,7 @@ export function ChatWidget() {
             sessionKey={FLOATING_SESSION_KEY}
             onClose={() => toggle(false)}
             autoFocus={open}
-            className="h-[min(700px,calc(100vh-7.5rem))] w-[min(380px,calc(100vw-2.5rem))]"
+            className="h-[min(630px,calc(100vh-7.5rem))] w-[min(380px,calc(100vw-2.5rem))]"
           />
         </div>
       )}

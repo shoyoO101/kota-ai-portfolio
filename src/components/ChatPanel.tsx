@@ -1,307 +1,278 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { sendChatMessage } from "../lib/chat.functions";
-import Markdown, { type Components } from "react-markdown";
-import { Send, X } from "lucide-react";
-import {
-  getSessionId,
-  newId,
-  setMessages,
-  useChatMessages,
-} from "../lib/chat-session";
-
-export const CHAT_WEBHOOK_URL =
-  "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat";
-
-export const FLOATING_SESSION_KEY = "kota-ai-chat-session-id";
-export const INLINE_SESSION_KEY = "kota-ai-chat-session-id-inline";
-
-const QUICK_REPLIES: { label: string; message: string }[] = [
-  {
-    label: "Help me find a product",
-    message: "Help me find a product — what type of product do you have?",
-  },
-  {
-    label: "Shipping & Returns",
-    message: "What are your shipping options and return policy?",
-  },
-  {
-    label: "Check a product's price",
-    message: "I'd like to check a product's price.",
-  },
-  {
-    label: "Help me choose a product",
-    message:
-      "Help me choose the right product for my setup — what do you need to know?",
-  },
-];
-
+import Markdown, { defaultUrlTransform, type Components } from "react-markdown";
+import { ArrowRight, Send, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { sendChatMessage } from "@/lib/chat.functions";
+import { CHAT_COPY, QUICK_PROMPTS } from "@/lib/chat-response";
+import { useChatSession } from "@/lib/chat-session";
+import { CHAT_STILL_WORKING_MS, runChatRequest } from "@/lib/chat-request";
+import { useChatUI } from "@/hooks/use-chat-ui";
+import { track } from "@/lib/analytics";
+import { BrandMark } from "./portfolio/BrandMark";
+import { ClockIcon } from "./portfolio/ClockIcon";
 
 const markdownComponents: Components = {
-  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-  em: ({ children }) => <em>{children}</em>,
-  ul: ({ children }) => (
-    <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>
-  ),
-  ol: ({ children }) => (
-    <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>
-  ),
-  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="font-medium text-[#4f7df3] underline underline-offset-2 hover:opacity-80"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }) =>
+    href ? (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    ) : (
+      <span>{children}</span>
+    ),
 };
-
-function BotMessage({ text }: { text: string }) {
-  return (
-    <div className="text-inherit [overflow-wrap:anywhere]">
-      <Markdown components={markdownComponents}>{text}</Markdown>
-    </div>
-  );
-}
-
-
-function extractReply(data: unknown): string {
-  if (typeof data === "string" && data.trim()) return data;
-  if (Array.isArray(data) && data.length > 0) return extractReply(data[0]);
-  if (data && typeof data === "object") {
-    const obj = data as Record<string, unknown>;
-    for (const key of ["output", "text", "message", "reply", "answer"]) {
-      const val = obj[key];
-      if (typeof val === "string" && val.trim()) return val;
-    }
-  }
-  return "Sorry — I couldn't generate a response just now. Please try again.";
-}
+// Raw HTML is skipped, URL schemes are filtered, and only these inert Markdown
+// elements can render. No HTML parser, scripts, images or embedded content.
+const markdownElements = [
+  "p",
+  "strong",
+  "em",
+  "ul",
+  "ol",
+  "li",
+  "a",
+  "code",
+  "pre",
+  "blockquote",
+  "br",
+  "hr",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+];
 
 export function ChatPanel({
-  sessionKey,
+  variant = "inline",
   onClose,
   className = "",
   autoFocus = false,
 }: {
-  sessionKey: string;
+  variant?: "inline" | "floating";
   onClose?: () => void;
   className?: string;
   autoFocus?: boolean;
 }) {
   const sendChat = useServerFn(sendChatMessage);
+  const { open, inlineInput } = useChatUI();
+  const { messages, pending, pendingSince } = useChatSession();
   const [input, setInput] = useState("");
-  const [sending, setSending] = useState(false);
-  const messages = useChatMessages(sessionKey);
+  const [stillWorking, setStillWorking] = useState(false);
+  const localInput = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const showPills = messages.length === 0 && !sending;
+  const composing = useRef(false);
+  const heading = useId();
+  const inputRef = variant === "inline" ? inlineInput : localInput;
+  const active = variant === "inline" || open;
+  const lastMessage = messages.at(-1);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages, sending]);
-
+    const container = scrollRef.current;
+    if (!active || !container) return;
+    const target = Array.from(container.querySelectorAll<HTMLElement>("[data-message-id]")).at(-1);
+    if (!target) return;
+    // Move only the message scroller, never the page or the enclosing panel.
+    const top =
+      target.getBoundingClientRect().top -
+      container.getBoundingClientRect().top +
+      container.scrollTop -
+      parseFloat(getComputedStyle(container).paddingTop);
+    container.scrollTo({ top: Math.max(0, top), behavior: "instant" });
+  }, [lastMessage?.id, active, autoFocus]);
   useEffect(() => {
-    if (autoFocus) inputRef.current?.focus();
-  }, [autoFocus]);
-
-  async function send(raw?: string) {
-    const text = (raw ?? input).trim();
-    if (!text || sending) return;
-    const sessionId = getSessionId(sessionKey);
-    setInput("");
-    setMessages(sessionKey, (prev) => [
-      ...prev,
-      { id: newId(), role: "user", text },
-    ]);
-    setSending(true);
-    try {
-      const { body: rawBody } = await sendChat({
-        data: {
-          message: text,
-          chatInput: text,
-          action: "sendMessage",
-          sessionId,
-        },
-      });
-      let parsed: unknown = rawBody;
-      try {
-        parsed = JSON.parse(rawBody);
-      } catch {
-        /* plain text response */
-      }
-      setMessages(sessionKey, (prev) => [
-        ...prev,
-        { id: newId(), role: "bot", text: extractReply(parsed) },
-      ]);
-    } catch {
-      setMessages(sessionKey, (prev) => [
-        ...prev,
-        {
-          id: newId(),
-          role: "bot",
-          text: "Connection error — please try again in a moment.",
-        },
-      ]);
-    } finally {
-      setSending(false);
+    setStillWorking(false);
+    if (pendingSince === null) return;
+    const remaining = CHAT_STILL_WORKING_MS - (Date.now() - pendingSince);
+    if (remaining <= 0) {
+      setStillWorking(true);
+      return;
     }
+    const timer = setTimeout(() => setStillWorking(true), remaining);
+    return () => clearTimeout(timer);
+  }, [pendingSince]);
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus({ preventScroll: true });
+  }, [autoFocus, inputRef]);
+
+  function send(raw?: string) {
+    const text = (raw ?? input).trim();
+    if (!text || composing.current || pending) return;
+    setInput("");
+    void runChatRequest(text, (data, signal) => sendChat({ data, signal }));
   }
 
   return (
-    <div
-      className={`flex flex-col overflow-hidden shadow-2xl ${className}`}
-      style={{
-        background: "#0a0a0a",
-        borderRadius: 24,
-        border: "1px solid #2a2a2a",
-      }}
-    >
-      <header className="relative shrink-0 px-6 pb-4 pt-5">
+    <section className={`chat-panel ${className}`} role="region" aria-label={CHAT_COPY.region}>
+      <header className="chat-header">
+        <BrandMark className="chat-header-mark" />
+        <div>
+          <h2 id={heading}>{CHAT_COPY.title}</h2>
+          <p>{CHAT_COPY.source}</p>
+        </div>
         {onClose && (
           <button
             type="button"
+            className="icon-button"
             onClick={onClose}
-            aria-label="Close chat"
-            className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800/60 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+            aria-label={CHAT_COPY.close}
           >
-            <X
-              size={18}
-              strokeWidth={1.75}
-              className="text-current"
-              aria-hidden
-            />
+            <X size={19} />
           </button>
         )}
-        <div
-          className={
-            "flex items-center justify-center gap-2 pt-8 " +
-            (onClose ? "pr-10" : "")
-          }
-        >
-          <span
-            className="h-2 w-2 shrink-0 rounded-full"
-            style={{ background: "#4f7df3", boxShadow: "0 0 0 4px #4f7df333" }}
-            aria-hidden
-          />
-          <h2 className="text-center text-[17px] font-semibold leading-snug text-white">
-            Kota AI | E-Commerce Demo
-          </h2>
-        </div>
-        <p className="mt-2 text-center text-xs leading-relaxed text-white/50">
-          Ask about products, shipping, or returns.
-        </p>
-        <p className="mt-1 text-center text-xs leading-relaxed text-white/40">
-          Try live pricing on: HDMI Cable, Banana Plugs, IR Repeater, Lightning
-          Cable, or Speaker Wire
-        </p>
       </header>
-
       <div
+        className="chat-conversation"
         ref={scrollRef}
-        className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-5 py-3"
+        role="log"
+        aria-label={CHAT_COPY.conversation}
+        aria-live="off"
+        tabIndex={0}
       >
-        {showPills && (
-          <div className="flex flex-wrap gap-2">
-            {QUICK_REPLIES.map((pill) => (
-              <button
-                key={pill.label}
-                type="button"
-                onClick={() => void send(pill.message)}
-                className="w-fit max-w-full rounded-full px-5 py-3 text-left text-sm leading-snug text-white/90 outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(79,125,243,0.32)] focus:outline-none focus-visible:shadow-[0_8px_24px_rgba(79,125,243,0.32)]"
-                style={{ background: "#1a1a1a" }}
-              >
-                {pill.label}
-              </button>
-            ))}
-          </div>
+        {messages.length === 0 && (
+          <>
+            <p className="chat-intro">{CHAT_COPY.intro}</p>
+            <div className="chat-prompts">
+              {QUICK_PROMPTS.map((prompt) => (
+                <button
+                  type="button"
+                  key={prompt.label}
+                  disabled={pending}
+                  onClick={() => {
+                    track("demo_chip_clicked", { label: prompt.label });
+                    void send(prompt.message);
+                  }}
+                >
+                  {prompt.label}
+                </button>
+              ))}
+            </div>
+          </>
         )}
-
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={
-              m.role === "user"
-                ? "max-w-[85%] self-end px-3.5 py-2.5 text-sm leading-relaxed text-white"
-                : "max-w-[90%] self-start px-3.5 py-2.5 text-sm leading-relaxed"
-            }
-            style={
-              m.role === "user"
-                ? { background: "#4f7df3", borderRadius: 24, color: "#fff" }
-                : { background: "#1a1a1a", borderRadius: 24, color: "#f0f0f0" }
-            }
-          >
-            {m.role === "bot" ? <BotMessage text={m.text} /> : m.text}
-          </div>
-        ))}
-
-        {sending && (
-          <div
-            className="max-w-[85%] self-start px-3.5 py-2.5"
-            style={{ background: "#1a1a1a", borderRadius: 24 }}
-            aria-label="Assistant is typing"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-xs leading-none text-white/50">Typing...</span>
-              <span className="flex gap-1">
-                {[0, 150, 300].map((d) => (
-                  <span
-                    key={d}
-                    className="h-1.5 w-1.5 animate-bounce rounded-full"
-                    style={{
-                      background: "#4f7df3",
-                      animationDelay: `${d}ms`,
-                    }}
-                  />
-                ))}
+        {messages.map((message) => {
+          const bubble = (
+            <div
+              className={`chat-message chat-message-${message.role}${message.error ? " chat-message-error" : ""}`}
+              key={message.id}
+              data-message-id={message.role === "user" ? message.id : undefined}
+            >
+              <span className="sr-only">
+                {message.role === "user"
+                  ? CHAT_COPY.you
+                  : message.error
+                    ? CHAT_COPY.status
+                    : CHAT_COPY.advisor}
               </span>
+              {message.role === "bot" ? (
+                <Markdown
+                  skipHtml
+                  allowedElements={markdownElements}
+                  urlTransform={defaultUrlTransform}
+                  components={markdownComponents}
+                >
+                  {message.text}
+                </Markdown>
+              ) : (
+                message.text
+              )}
+            </div>
+          );
+          return message.role === "bot" ? (
+            <div className="chat-assistant-row" key={message.id} data-message-id={message.id}>
+              <BrandMark className="chat-message-avatar" />
+              {bubble}
+            </div>
+          ) : (
+            bubble
+          );
+        })}
+        {pending && (
+          <div className="chat-assistant-row chat-pending-row">
+            <BrandMark className="chat-message-avatar" />
+            <div className="chat-message chat-pending">
+              <ClockIcon ticking />
+              {stillWorking && <span className="chat-still-working">{CHAT_COPY.stillWorking}</span>}
             </div>
           </div>
         )}
       </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void send();
-        }}
-        className="shrink-0 px-4 pb-4 pt-3"
+      <div
+        className="sr-only"
+        role="status"
+        aria-live={active ? "polite" : "off"}
+        aria-atomic="true"
       >
-        <div
-          className="flex items-center gap-2 rounded-full px-4 py-2"
-          style={{ background: "#1a1a1a" }}
-        >
+        {pending ? CHAT_COPY.pending : lastMessage?.role === "bot" ? lastMessage.text : ""}
+      </div>
+      <form
+        className="chat-composer"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!composing.current) void send();
+        }}
+      >
+        <div className="chat-input-row">
           <input
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Send us a message"
-            className="min-w-0 flex-1 bg-transparent py-2 text-sm text-white outline-none placeholder:text-white/40"
+            onChange={(event) => setInput(event.target.value)}
+            onCompositionStart={() => {
+              composing.current = true;
+            }}
+            onCompositionEnd={() => {
+              composing.current = false;
+            }}
+            onKeyDown={(event) => {
+              if (
+                event.key === "Enter" &&
+                (event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229)
+              )
+                event.preventDefault();
+            }}
+            maxLength={5000}
+            autoComplete="off"
+            aria-label={CHAT_COPY.input}
+            placeholder={CHAT_COPY.placeholder}
           />
           <button
             type="submit"
-            disabled={!input.trim() || sending}
-            aria-label="Send message"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:opacity-40"
-            style={{ background: "#4f7df3" }}
+            className="chat-send"
+            aria-label={CHAT_COPY.send}
+            disabled={!input.trim() || pending}
           >
-            <Send
-              size={18}
-              strokeWidth={1.75}
-              className="text-current"
-              aria-hidden
-            />
+            <Send size={16} strokeWidth={1.75} aria-hidden="true" />
           </button>
         </div>
       </form>
-    </div>
+      <footer className="chat-footer">
+        <p className="demo-disclaimer">{CHAT_COPY.disclaimer}</p>
+        {variant === "inline" ? (
+          <Link
+            to="/"
+            hash="contact"
+            className="chat-conversion"
+            onClick={() => track("lets_talk_clicked", { location: "panel" })}
+          >
+            {CHAT_COPY.conversion}
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        ) : (
+          <a
+            href="#contact"
+            className="chat-conversion"
+            onClick={() => {
+              track("lets_talk_clicked", { location: "panel" });
+              onClose?.();
+            }}
+          >
+            {CHAT_COPY.conversion}
+            <ArrowRight size={14} aria-hidden="true" />
+          </a>
+        )}
+      </footer>
+    </section>
   );
 }

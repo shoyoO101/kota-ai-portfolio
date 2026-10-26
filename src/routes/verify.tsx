@@ -1,147 +1,85 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { ChatPanel, INLINE_SESSION_KEY } from "../components/ChatPanel";
+import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ChatPanel } from "@/components/ChatPanel";
+import { Brand } from "@/components/portfolio/SiteHeader";
+import { ProfileMark } from "@/components/portfolio/PortfolioSections";
+import { COPY } from "@/lib/site-copy";
+import { pageMeta } from "@/lib/site-content";
+import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/verify")({
-  head: () => ({
-    meta: [
-      { title: "Verify — Kareem | Kota AI" },
-      {
-        name: "description",
-        content:
-          "Hi from Kareem — a solo developer building custom automation and AI solutions. Test the live RAG chatbot demo right here.",
-      },
-      {
-        property: "og:title",
-        content: "Verify — Kareem | Kota AI",
-      },
-      {
-        property: "og:description",
-        content:
-          "Hi from Kareem — a solo developer building custom automation and AI solutions. Test the live RAG chatbot demo right here.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Verify — Kareem | Kota AI" },
-      {
-        name: "twitter:description",
-        content:
-          "Hi from Kareem — a solo developer building custom automation and AI solutions. Test the live RAG chatbot demo right here.",
-      },
-    ],
-  }),
+  head: () => ({ meta: pageMeta(COPY.meta.verifyTitle, COPY.meta.verifyDescription) }),
   component: VerifyPage,
 });
 
-const INTRO_PARAGRAPHS = [
-  "Hi there! 👋",
-  "If you received an email from kareem@hellokotaai.com, that's me — Kareem. I'm a solo developer building custom automation and AI solutions.",
-  "My current focus is a RAG (Retrieval-Augmented Generation) chatbot that answers questions based on your own business data. You can test a demo of it right below.",
-  "Beyond chatbots, I build automated workflows using n8n to save time on repetitive tasks and connect different tools together.",
-  "If any of this sounds useful to you, just hit reply on my email — I'd love to hear what you're working on!",
-];
-
 function VerifyPage() {
   return (
-    <div className="min-h-screen">
-      <VerifyHeader />
-      <main>
-        <VerifyHero />
-        <ChatDemoSection />
-      </main>
-      <VerifyFooter />
-    </div>
-  );
-}
-
-function Container({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-3xl px-6 sm:px-8">{children}</div>;
-}
-
-function VerifyHeader() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-background/70 backdrop-blur-xl">
-      <Container>
-        <div className="flex h-16 items-center justify-between">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Kota AI
-          </Link>
-          <span className="font-mono text-sm font-semibold tracking-tight text-foreground">
-            Kota<span className="text-indigo-accent"> AI</span>
+    <>
+      <a className="skip-link" href="#main">
+        {COPY.site.skip}
+      </a>
+      <header className="verify-header site-container">
+        <Brand />
+      </header>
+      <main id="main" className="site-container verify-layout">
+        <div className="verify-copy">
+          <h1>
+            {COPY.verify.heading} <em>{COPY.verify.emphasis}</em>
+          </h1>
+          <div className="verify-identity">
+            <ProfileMark />
+            <div>
+              <h2>{COPY.verify.name}</h2>
+              <p>{COPY.verify.identity}</p>
+              <a href={`mailto:${COPY.site.email}`}>
+                {COPY.site.email}
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+          <p className="verify-note">{COPY.verify.note}</p>
+        </div>
+        <div className="verify-demo" aria-label={COPY.verify.chatLabel}>
+          <span className="project-kind live-label verify-demo-label">
+            <span aria-hidden="true" />
+            {COPY.verify.badge}
           </span>
+          <ChatPanel variant="inline" className="inline-chat" />
         </div>
-      </Container>
-    </header>
-  );
-}
-
-function VerifyHero() {
-  return (
-    <section className="border-b border-hairline py-16 sm:py-20">
-      <Container>
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-indigo-accent">
-          A note from Kareem
-        </p>
-        <div className="mt-6 space-y-5 text-left">
-          {INTRO_PARAGRAPHS.map((p, i) => (
-            <p
-              key={i}
-              className={
-                i === 0
-                  ? "text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-                  : "text-base leading-relaxed text-muted-foreground sm:text-lg"
-              }
+        <div className="verify-followup">
+          <div className="verify-actions">
+            <a
+              className="button button-primary"
+              href={`mailto:${COPY.site.email}?subject=${encodeURIComponent(COPY.verify.replySubject)}`}
+              onClick={() => track("reply_email_clicked")}
             >
-              {p}
-            </p>
-          ))}
+              {COPY.verify.reply}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
+            <Link
+              to="/"
+              className="text-link verify-work"
+              onClick={() => track("full_work_clicked")}
+            >
+              {COPY.verify.work}
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+          <ul className="verify-points">
+            {COPY.verify.points.map((point) => (
+              <li key={point}>
+                <Check size={16} strokeWidth={1.8} aria-hidden="true" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="mt-8 text-sm text-muted-foreground">
-          👇 Test the live RAG chatbot demo below — or use the floating chat in
-          the corner.
+      </main>
+      <footer className="verify-footer site-container">
+        <p>
+          {COPY.site.copyright} {COPY.verify.footer}
         </p>
-      </Container>
-    </section>
-  );
-}
-
-function ChatDemoSection() {
-  return (
-    <section className="py-16 sm:py-20">
-      <Container>
-        <div className="mb-8 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-indigo-accent">
-            Live Demo
-          </p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Try the RAG chatbot
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
-            Trained on Sewell.com's e-commerce catalog. Ask about shipping
-            times, return policies, or product recommendations.
-          </p>
-        </div>
-        <ChatPanel
-          sessionKey={INLINE_SESSION_KEY}
-          className="mx-auto h-[min(640px,70vh)] w-full max-w-[380px]"
-        />
-      </Container>
-    </section>
-  );
-}
-
-function VerifyFooter() {
-  return (
-    <footer className="border-t border-hairline py-8">
-      <Container>
-        <p className="text-center font-mono text-xs text-muted-foreground">
-          Designed by Kareem © 2026. Built for precision.
-        </p>
-      </Container>
-    </footer>
+      </footer>
+    </>
   );
 }

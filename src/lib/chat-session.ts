@@ -1,63 +1,79 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-export type ChatMessage = { id: string; role: "bot" | "user"; text: string };
-
-type Store = {
+export type ChatMessage = { id: string; role: "bot" | "user"; text: string; error?: boolean };
+export type ChatSnapshot = {
   sessionId: string;
   messages: ChatMessage[];
-  listeners: Set<() => void>;
+  pending: boolean;
+  pendingSince: number | null;
+};
+type Store = { snapshot: ChatSnapshot; listeners: Set<() => void> };
+export const CHAT_SESSION_KEY = "kota-ai-product-advisor";
+const stores = new Map<string, Store>();
+const emptySnapshot: ChatSnapshot = {
+  sessionId: "",
+  messages: [],
+  pending: false,
+  pendingSince: null,
 };
 
-// In-memory only: lives for the current page load. A refresh or a new tab
-// starts a brand new session; opening/closing the widget keeps it.
-const stores = new Map<string, Store>();
-
-function newId() {
+export function newId() {
   try {
     return crypto.randomUUID();
   } catch {
     return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 }
-
 function getStore(key: string): Store {
   let store = stores.get(key);
   if (!store) {
-    store = { sessionId: newId(), messages: [], listeners: new Set() };
+    store = {
+      snapshot: { sessionId: newId(), messages: [], pending: false, pendingSince: null },
+      listeners: new Set(),
+    };
     stores.set(key, store);
   }
   return store;
 }
-
-export function getSessionId(key: string) {
-  return getStore(key).sessionId;
-}
-
-export function setMessages(
-  key: string,
-  update: (prev: ChatMessage[]) => ChatMessage[],
-) {
+function update(key: string, next: Partial<ChatSnapshot>) {
   const store = getStore(key);
-  store.messages = update(store.messages);
-  store.listeners.forEach((l) => l());
+  store.snapshot = { ...store.snapshot, ...next };
+  store.listeners.forEach((listener) => listener());
 }
-
-export function useChatMessages(key: string) {
-  const [messages, setLocal] = useState<ChatMessage[]>(
-    () => getStore(key).messages,
+export function getSessionId(key = CHAT_SESSION_KEY) {
+  return getStore(key).snapshot.sessionId;
+}
+export function getChatSnapshot(key = CHAT_SESSION_KEY) {
+  return getStore(key).snapshot;
+}
+export function beginChatMessage(text: string, key = CHAT_SESSION_KEY) {
+  const store = getStore(key);
+  if (store.snapshot.pending) return false;
+  update(key, {
+    pending: true,
+    pendingSince: Date.now(),
+    messages: [...store.snapshot.messages, { id: newId(), role: "user", text }],
+  });
+  return true;
+}
+export function finishChatMessage(text: string, error = false, key = CHAT_SESSION_KEY) {
+  const store = getStore(key);
+  update(key, {
+    pending: false,
+    pendingSince: null,
+    messages: [...store.snapshot.messages, { id: newId(), role: "bot", text, error }],
+  });
+}
+export function useChatSession(key = CHAT_SESSION_KEY) {
+  return useSyncExternalStore(
+    (listener) => {
+      const store = getStore(key);
+      store.listeners.add(listener);
+      return () => {
+        store.listeners.delete(listener);
+      };
+    },
+    () => getStore(key).snapshot,
+    () => emptySnapshot,
   );
-
-  useEffect(() => {
-    const store = getStore(key);
-    const listener = () => setLocal(store.messages);
-    store.listeners.add(listener);
-    listener();
-    return () => {
-      store.listeners.delete(listener);
-    };
-  }, [key]);
-
-  return messages;
 }
-
-export { newId };

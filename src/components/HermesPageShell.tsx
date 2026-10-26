@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { COPY } from "@/lib/site-copy";
 
 export function HermesPageShell({ children }: { children: ReactNode }) {
   return (
@@ -9,7 +10,7 @@ export function HermesPageShell({ children }: { children: ReactNode }) {
           <span className="font-mono text-sm font-semibold tracking-tight text-foreground">
             Hermes<span className="text-indigo-accent"> outreach</span>
           </span>
-          <span className="font-mono text-xs text-muted-foreground">Kota AI</span>
+          <span className="font-mono text-xs text-muted-foreground">{COPY.site.brand}</span>
         </div>
       </header>
       <main>
@@ -19,8 +20,8 @@ export function HermesPageShell({ children }: { children: ReactNode }) {
         <div className="mx-auto w-full max-w-3xl px-6 sm:px-8">
           <p className="text-center font-mono text-xs text-muted-foreground">
             Personal tooling operated by{" "}
-            <Link to="/" className="text-foreground/80 underline-offset-4 hover:underline">
-              Kota AI
+            <Link to="/" className="text-foreground/80 underline underline-offset-4">
+              {COPY.site.brand}
             </Link>
             . Not listed in the main site navigation.
           </p>
@@ -36,17 +37,13 @@ export function HermesEyebrow({ children }: { children: ReactNode }) {
   );
 }
 
-export function HermesSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+export function HermesSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-12">
       <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{title}</h2>
-      <div className="mt-4 space-y-4 text-base leading-relaxed text-muted-foreground">{children}</div>
+      <div className="mt-4 space-y-4 text-base leading-relaxed text-muted-foreground">
+        {children}
+      </div>
     </section>
   );
 }

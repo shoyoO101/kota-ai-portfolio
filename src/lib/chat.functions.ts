@@ -1,32 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 
-const CHAT_WEBHOOK_URL =
-  "https://n8n.trykotaai.com/webhook/1e8b39ac-ee67-43df-9733-408192ecfe2f/chat";
+const chatInput = z.object({
+  message: z.string().trim().min(1).max(5000),
+  chatInput: z.string().trim().min(1).max(5000),
+  action: z.literal("sendMessage"),
+  sessionId: z.string().min(1).max(200),
+});
 
-type ChatInput = {
-  message: string;
-  chatInput: string;
-  action: string;
-  sessionId: string;
-};
-
-/**
- * Server-side relay for the n8n Chat Trigger. The webhook only allows the
- * trykotaai.com origin, so browsers block direct calls from other hosts.
- * Endpoint, method and payload are forwarded unchanged.
- */
+/** Keep the n8n destination and HTTP transport exclusively in the server handler. */
 export const sendChatMessage = createServerFn({ method: "POST" })
-  .inputValidator((data: ChatInput) => data)
+  .inputValidator((data: unknown) => chatInput.parse(data))
   .handler(async ({ data }) => {
-    const res = await fetch(CHAT_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: data.message,
-        chatInput: data.chatInput,
-        action: data.action,
-        sessionId: data.sessionId,
-      }),
-    });
-    return { body: await res.text(), ok: res.ok };
+    const { relayChat } = await import("./chat-relay.server");
+    return relayChat(data);
   });

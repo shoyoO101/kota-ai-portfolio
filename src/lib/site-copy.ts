@@ -261,6 +261,16 @@ export const COPY = {
     name: "Kareem",
     identity: "The independent builder behind PineHour AI",
     note: "I'm Kareem, an independent builder of AI assistants and automations. If you received an email from me, this is the work behind it. Try the working example: ask it a question, or send a bulk-order enquiry.",
+    outreach: {
+      heading: "Emails I use to reach out",
+      description:
+        "You may have received an email from one of these addresses. All three are managed by me.",
+      addresses: [
+        "kareem@hellopinehourai.com",
+        "adam@hellopinehourai.com",
+        "k.adam@hellopinehourai.com",
+      ],
+    },
     demoHeading: "Try the AI Product Advisor",
     reply: "Reply to my email",
     replySubject: "Re: AI assistant demo",

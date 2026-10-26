@@ -38,6 +38,17 @@ function VerifyPage() {
             </div>
           </div>
           <p className="verify-note">{COPY.verify.note}</p>
+          <section className="verify-outreach" aria-labelledby="verify-outreach-heading">
+            <h2 id="verify-outreach-heading">{COPY.verify.outreach.heading}</h2>
+            <p>{COPY.verify.outreach.description}</p>
+            <ul>
+              {COPY.verify.outreach.addresses.map((address) => (
+                <li key={address}>
+                  <a href={`mailto:${address}`}>{address}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
         <div className="verify-demo" aria-label={COPY.verify.chatLabel}>
           <span className="project-kind live-label verify-demo-label">

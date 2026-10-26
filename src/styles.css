@@ -1692,6 +1692,43 @@ h2 {
   margin: 24px 0 0;
   max-width: 49ch;
 }
+.verify-outreach {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.verify-outreach h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.verify-outreach p {
+  margin-top: 6px;
+  max-width: 49ch;
+}
+.verify-outreach ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  margin-top: 6px;
+  padding: 0;
+  list-style: none;
+}
+.verify-outreach li {
+  min-width: 0;
+  max-width: 100%;
+}
+.verify-outreach a {
+  display: inline-block;
+  min-height: 36px;
+  max-width: 100%;
+  padding-block: 6px;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .verify-work {
   display: flex;
   width: fit-content;

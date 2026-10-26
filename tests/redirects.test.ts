@@ -12,7 +12,7 @@ const config = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url
 const redirects: Redirect[] = config.redirects;
 const outreach = redirects.filter((rule) => rule.destination === "https://pinehourai.com/verify");
 
-test("PineHour outreach redirects match exactly the two root hostnames and remain temporary", () => {
+test("PineHour outreach redirects match exactly the two root hostnames and are permanent", () => {
   assert.equal(outreach.length, 2);
   for (const host of ["hellopinehourai.com", "www.hellopinehourai.com"]) {
     const matching = outreach.filter((rule) =>
@@ -23,7 +23,7 @@ test("PineHour outreach redirects match exactly the two root hostnames and remai
     assert.equal(matching.length, 1);
     const rule = matching[0]!;
     assert.equal(rule.source, "/");
-    assert.equal(rule.permanent, false); // Vercel uses HTTP 307.
+    assert.equal(rule.permanent, true); // Vercel uses HTTP 308.
     assert.deepEqual(Object.keys(rule).sort(), ["destination", "has", "permanent", "source"]);
     assert.equal(rule.has.length, 1);
     // No destination query replaces the incoming parameters Vercel forwards.

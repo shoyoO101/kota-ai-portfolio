@@ -31,7 +31,7 @@
         }
       ],
       "destination": "https://pinehourai.com/verify",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/",
@@ -42,7 +42,7 @@
         }
       ],
       "destination": "https://pinehourai.com/verify",
-      "permanent": false
+      "permanent": true
     }
   ]
 }

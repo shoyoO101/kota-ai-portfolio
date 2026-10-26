@@ -1750,6 +1750,16 @@ h2 {
   min-height: 520px;
   flex: 1;
 }
+@media (min-width: 741px) {
+  .verify-demo {
+    align-self: start;
+  }
+  .verify-demo .inline-chat {
+    height: 480px;
+    min-height: 0;
+    flex: none;
+  }
+}
 .verify-followup {
   grid-area: followup;
   align-self: end;

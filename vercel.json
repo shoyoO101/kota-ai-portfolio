@@ -21,6 +21,28 @@
       ],
       "destination": "https://trykotaai.com/verify",
       "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "hellopinehourai\\.com"
+        }
+      ],
+      "destination": "https://pinehourai.com/verify",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.hellopinehourai\\.com"
+        }
+      ],
+      "destination": "https://pinehourai.com/verify",
+      "permanent": false
     }
   ]
 }

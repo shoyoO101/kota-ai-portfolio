@@ -12,7 +12,10 @@ import { pageMeta } from "@/lib/site-content";
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: pageMeta(COPY.meta.homeTitle, COPY.meta.homeDescription) }),
+  head: () => ({
+    meta: pageMeta(COPY.meta.homeTitle, COPY.meta.homeDescription),
+    links: [{ rel: "canonical", href: "https://pinehourai.com/" }],
+  }),
   component: Index,
 });
 function Index() {

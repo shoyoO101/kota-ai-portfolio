@@ -8,7 +8,10 @@ import { pageMeta } from "@/lib/site-content";
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/verify")({
-  head: () => ({ meta: pageMeta(COPY.meta.verifyTitle, COPY.meta.verifyDescription) }),
+  head: () => ({
+    meta: pageMeta(COPY.meta.verifyTitle, COPY.meta.verifyDescription),
+    links: [{ rel: "canonical", href: "https://pinehourai.com/verify" }],
+  }),
   component: VerifyPage,
 });
 
